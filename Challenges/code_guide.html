@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Guide - Giải thích từng dòng</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: rgba(0,0,0,0.3);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 2px solid #0f3460;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            justify-content: center;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #0f3460;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background: #1a4a7a;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #00d9ff, #00ff88);
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+        
+        .code-section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .code-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .code-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+        
+        .code-header {
+            background: linear-gradient(135deg, #0f3460, #16213e);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .code-header h2 {
+            color: #00d9ff;
+            font-size: 1.3em;
+        }
+        
+        .file-badge {
+            background: rgba(0,217,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #00d9ff;
+        }
+        
+        .code-content {
+            display: flex;
+        }
+        
+        .code-block {
+            flex: 1;
+            background: #0a0a15;
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .code-line {
+            display: flex;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .code-line:last-child {
+            border-bottom: none;
+        }
+        
+        .line-number {
+            width: 40px;
+            color: #555;
+            text-align: right;
+            padding-right: 15px;
+            user-select: none;
+        }
+        
+        .line-content {
+            flex: 1;
+            white-space: pre;
+        }
+        
+        .keyword { color: #ff79c6; }
+        .function { color: #50fa7b; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; font-style: italic; }
+        .number { color: #bd93f9; }
+        .operator { color: #ff79c6; }
+        
+        .explanation-panel {
+            width: 400px;
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .explanation-item {
+            display: none;
+            animation: slideIn 0.3s;
+        }
+        
+        .explanation-item.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .explanation-title {
+            color: #ffd700;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .explanation-content {
+            color: #ccc;
+            font-size: 14px;
+        }
+        
+        .explanation-content code {
+            background: rgba(0,217,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #00d9ff;
+            font-family: monospace;
+        }
+        
+        .highlight-note {
+            background: rgba(255,215,0,0.1);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        
+        .highlight-note strong {
+            color: #ffd700;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .nav-btn {
+            padding: 8px 16px;
+            background: #0f3460;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn:hover {
+            background: #1a4a7a;
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .current-line-indicator {
+            background: rgba(255,215,0,0.2);
+        }
+        
+        .code-line:hover {
+            background: rgba(0,217,255,0.1);
+            cursor: pointer;
+        }
+        
+        .code-line.current {
+            background: rgba(255,215,0,0.15);
+            border-left: 3px solid #ffd700;
+        }
+        
+        .overview {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .overview h3 {
+            color: #00ff88;
+            margin-bottom: 15px;
+        }
+        
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .overview-item {
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid #00d9ff;
+        }
+        
+        .overview-item .label {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .overview-item .value {
+            color: #00ff88;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💻 Code Guide - Giải thích từng dòng</h1>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" onclick="showSection('challenge1')">C1: File Splitting</button>
+        <button class="tab" onclick="showSection('challenge2')">C2: Fibonacci</button>
+        <button class="tab" onclick="showSection('challenge3')">C3: Matrix</button>
+        <button class="tab" onclick="showSection('challenge4')">C4: Sorting</button>
+        <button class="tab" onclick="showSection('challenge5')">C5: Search</button>
+        <button class="tab" onclick="showSection('challenge6')">C6: Closest Pair</button>
+    </div>
+    
+    <div class="container">
+        <!-- CHALLENGE 1 -->
+        <div id="challenge1" class="code-section active">
+            <div class="overview">
+                <h3>📁 Challenge 1: Byte-Range File Splitting</h3>
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="label">Mục đích</div>
+                        <div class="value">Chia file để xử lý song song</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Import</div>
+                        <div class="value">multiprocessing</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Số process</div>
+                        <div class="value">16</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-card">
+                <div class="code-header">
+                    <h2>worker_task</h2>
+                    <span class="file-badge">challenge1.py</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-block">
+<div class="code-line" onclick="showExplanation(1, 1)"><span class="line-number"> 1</span><span class="line-content"><span class="keyword">def</span> <span class="function">worker_task</span>(args):</span></div>
+<div class="code-line" onclick="showExplanation(1, 2)"><span class="line-number"> 2</span><span class="line-content">    file_path, start_byte, end_byte = args</span></div>
+<div class="code-line" onclick="showExplanation(1, 3)"><span class="line-number"> 3</span><span class="line-content">    total = <span class="number">0</span></span></div>
+<div class="code-line" onclick="showExplanation(1, 4)"><span class="line-number"> 4</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(1, 5)"><span class="line-number"> 5</span><span class="line-content">    <span class="keyword">with</span> <span class="function">open</span>(file_path, <span class="string">'r'</span>) <span class="keyword">as</span> f:</span></div>
+<div class="code-line" onclick="showExplanation(1, 6)"><span class="line-number"> 6</span><span class="line-content">        f.seek(start_byte)</span></div>
+<div class="code-line" onclick="showExplanation(1, 7)"><span class="line-number"> 7</span><span class="line-content">        chunk = f.read(end_byte - start_byte)</span></div>
+<div class="code-line" onclick="showExplanation(1, 8)"><span class="line-number"> 8</span><span class="line-content">        </span></div>
+<div class="code-line" onclick="showExplanation(1, 9)"><span class="line-number"> 9</span><span class="line-content">        <span class="keyword">for</span> s <span class="keyword">in</span> chunk.split():</span></div>
+<div class="code-line" onclick="showExplanation(1, 10)"><span class="line-number">10</span><span class="line-content">            <span class="keyword">try</span>:</span></div>
+<div class="code-line" onclick="showExplanation(1, 11)"><span class="line-number">11</span><span class="line-content">                val = <span class="function">float</span>(s)</span></div>
+<div class="code-line" onclick="showExplanation(1, 12)"><span class="line-number">12</span><span class="line-content">                <span class="keyword">if</span> val > <span class="number">0</span> <span class="keyword">and</span> val.is_integer():</span></div>
+<div class="code-line" onclick="showExplanation(1, 13)"><span class="line-number">13</span><span class="line-content">                    ival = <span class="function">int</span>(val)</span></div>
+<div class="code-line" onclick="showExplanation(1, 14)"><span class="line-number">14</span><span class="line-content">                    <span class="keyword">if</span> ival % <span class="number">3</span> == <span class="number">0</span>:</span></div>
+<div class="code-line" onclick="showExplanation(1, 15)"><span class="line-number">15</span><span class="line-content">                        total += ival</span></div>
+<div class="code-line" onclick="showExplanation(1, 16)"><span class="line-number">16</span><span class="line-content">            <span class="keyword">except</span> ValueError:</span></div>
+<div class="code-line" onclick="showExplanation(1, 17)"><span class="line-number">17</span><span class="line-content">                <span class="keyword">continue</span></span></div>
+<div class="code-line" onclick="showExplanation(1, 18)"><span class="line-number">18</span><span class="line-content">                </span></div>
+<div class="code-line" onclick="showExplanation(1, 19)"><span class="line-number">19</span><span class="line-content">    <span class="keyword">return</span> total</span></div>
+                    </div>
+                    <div class="explanation-panel">
+                        <div id="exp1-1" class="explanation-item active">
+                            <div class="explanation-title">📍 Dòng 1: Định nghĩa hàm</div>
+                            <div class="explanation-content">
+                                Khai báo hàm <code>worker_task</code> nhận tham số <code>args</code>.
+                                <br><br>
+                                Hàm này chạy trong mỗi process con để xử lý một đoạn dữ liệu.
+                                <div class="highlight-note">
+                                    <strong>💡 Chú ý:</strong> Mỗi worker độc lập, không chia sẻ biến với process khác.
+                                </div>
+                            </div>
+                        </div>
+                        <div id="exp1-2" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 2: Giải nén args</div>
+                            <div class="explanation-content">
+                                args chứa 3 giá trị: <code>(file_path, start_byte, end_byte)</code>
+                                <br><br>
+                                • <code>file_path</code>: đường dẫn file cần đọc
+                                <br>
+                                • <code>start_byte</code>: vị trí bắt đầu đọc
+                                <br>
+                                • <code>end_byte</code>: vị trí kết thúc đọc
+                            </div>
+                        </div>
+                        <div id="exp1-3" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 3: Khởi tạo tổng</div>
+                            <div class="explanation-content">
+                                Đặt <code>total = 0</code> để tính tổng các số hợp lệ trong đoạn.
+                            </div>
+                        </div>
+                        <div id="exp1-5" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 5-7: Đọc chunk</div>
+                            <div class="explanation-content">
+                                1. <code>f.seek(start_byte)</code> - Di chuyển con trỏ đến vị trí bắt đầu
+                                <br><br>
+                                2. <code>f.read(end_byte - start_byte)</code> - Đọc đúng số byte cần xử lý
+                                <div class="highlight-note">
+                                    <strong>⚠️ Quan trọng:</strong> Điểm cắt phải ở khoảng trắng, không cắt giữa số!
+                                </div>
+                            </div>
+                        </div>
+                        <div id="exp1-9" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 9-17: Lọc và tính tổng</div>
+                            <div class="explanation-content">
+                                <code>chunk.split()</code> - Tách chunk thành các token (số)
+                                <br><br>
+                                Với mỗi token:
+                                <br>1. <code>float(s)</code> - Chuyển sang số thực
+                                <br>2. <code>val > 0</code> - Kiểm tra dương
+                                <br>3. <code>val.is_integer()</code> - Kiểm tra là số nguyên
+                                <br>4. <code>ival % 3 == 0</code> - Kiểm tra chia hết cho 3
+                                <br><br>
+                                <code>try/except</code> bắt lỗi nếu không chuyển được sang số.
+                            </div>
+                        </div>
+                        <div id="exp1-19" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 19: Trả kết quả</div>
+                            <div class="explanation-content">
+                                Trả về <code>total</code> - tổng cục bộ của process này.
+                                <br><br>
+                                Process chính sẽ cộng tất cả các kết quả này lại.
+                            </div>
+                        </div>
+                        
+                        <div class="nav-buttons">
+                            <button class="nav-btn" onclick="prevLine(1)">← Trước</button>
+                            <button class="nav-btn" onclick="nextLine(1)">Sau →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-card">
+                <div class="code-header">
+                    <h2>MAIN - Chia task</h2>
+                    <span class="file-badge">challenge1.py</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-block">
+<div class="code-line" onclick="showExplanation(1, 24)"><span class="line-number">24</span><span class="line-content"><span class="keyword">def</span> <span class="function">MAIN</span>(input_file_path):</span></div>
+<div class="code-line" onclick="showExplanation(1, 25)"><span class="line-number">25</span><span class="line-content">    <span class="keyword">with</span> <span class="function">open</span>(input_file_path, <span class="string">"r"</span>) <span class="keyword">as</span> f:</span></div>
+<div class="code-line" onclick="showExplanation(1, 26)"><span class="line-number">26</span><span class="line-content">        line1 = f.readline()</span></div>
+<div class="code-line" onclick="showExplanation(1, 27)"><span class="line-number">27</span><span class="line-content">        n = <span class="function">int</span>(line1.strip())</span></div>
+<div class="code-line" onclick="showExplanation(1, 28)"><span class="line-number">28</span><span class="line-content">        data_start_pos = f.tell()</span></div>
+<div class="code-line" onclick="showExplanation(1, 29)"><span class="line-number">29</span><span class="line-content">        f.seek(<span class="number">0</span>, <span class="number">2</span>)</span></div>
+<div class="code-line" onclick="showExplanation(1, 30)"><span class="line-number">30</span><span class="line-content">        file_size = f.tell()</span></div>
+<div class="code-line" onclick="showExplanation(1, 31)"><span class="line-number">31</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(1, 32)"><span class="line-number">32</span><span class="line-content">    data_size = file_size - data_start_pos</span></div>
+<div class="code-line" onclick="showExplanation(1, 33)"><span class="line-number">33</span><span class="line-content">    num_proc = <span class="number">16</span></span></div>
+<div class="code-line" onclick="showExplanation(1, 34)"><span class="line-number">34</span><span class="line-content">    chunk_size = data_size // num_proc</span></div>
+<div class="code-line" onclick="showExplanation(1, 35)"><span class="line-number">35</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(1, 36)"><span class="line-number">36</span><span class="line-content">    tasks = []</span></div>
+<div class="code-line" onclick="showExplanation(1, 37)"><span class="line-number">37</span><span class="line-content">    current_start = data_start_pos</span></div>
+<div class="code-line" onclick="showExplanation(1, 38)"><span class="line-number">38</span><span class="line-content">    </span></div>
+<div class="code-line" onclick="showExplanation(1, 39)"><span class="line-number">39</span><span class="line-content">    <span class="keyword">with</span> <span class="function">open</span>(input_file_path, <span class="string">"r"</span>) <span class="keyword">as</span> f:</span></div>
+<div class="code-line" onclick="showExplanation(1, 40)"><span class="line-number">40</span><span class="line-content">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">1</span>, num_proc):</span></div>
+<div class="code-line" onclick="showExplanation(1, 41)"><span class="line-number">41</span><span class="line-content">            target_end = data_start_pos + i * chunk_size</span></div>
+<div class="code-line" onclick="showExplanation(1, 42)"><span class="line-number">42</span><span class="line-content">            f.seek(target_end)</span></div>
+<div class="code-line" onclick="showExplanation(1, 43)"><span class="line-number">43</span><span class="line-content">            <span class="keyword">while</span> <span class="keyword">True</span>:</span></div>
+<div class="code-line" onclick="showExplanation(1, 44)"><span class="line-number">44</span><span class="line-content">                char = f.read(<span class="number">1</span>)</span></div>
+<div class="code-line" onclick="showExplanation(1, 45)"><span class="line-number">45</span><span class="line-content">                <span class="keyword">if</span> <span class="keyword">not</span> char <span class="keyword">or</span> char.isspace():</span></div>
+<div class="code-line" onclick="showExplanation(1, 46)"><span class="line-number">46</span><span class="line-content">                    <span class="keyword">break</span></span></div>
+<div class="code-line" onclick="showExplanation(1, 47)"><span class="line-number">47</span><span class="line-content">            current_end = f.tell()</span></div>
+<div class="code-line" onclick="showExplanation(1, 48)"><span class="line-number">48</span><span class="line-content">            tasks.append((input_file_path, current_start, current_end))</span></div>
+<div class="code-line" onclick="showExplanation(1, 49)"><span class="line-number">49</span><span class="line-content">            current_start = current_end</span></div>
+<div class="code-line" onclick="showExplanation(1, 50)"><span class="line-number">50</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(1, 51)"><span class="line-number">51</span><span class="line-content">        tasks.append((input_file_path, current_start, file_size))</span></div>
+<div class="code-line" onclick="showExplanation(1, 52)"><span class="line-number">52</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(1, 53)"><span class="line-number">53</span><span class="line-content">    <span class="keyword">with</span> <span class="function">multiprocessing.Pool</span>(processes=num_proc) <span class="keyword">as</span> pool:</span></div>
+<div class="code-line" onclick="showExplanation(1, 54)"><span class="line-number">54</span><span class="line-content">        results = pool.map(worker_task, tasks)</span></div>
+<div class="code-line" onclick="showExplanation(1, 55)"><span class="line-number">55</span><span class="line-content">        </span></div>
+<div class="code-line" onclick="showExplanation(1, 56)"><span class="line-number">56</span><span class="line-content">    <span class="keyword">return</span> <span class="function">sum</span>(results)</span></div>
+                    </div>
+                    <div class="explanation-panel">
+                        <div id="exp1-24" class="explanation-item active">
+                            <div class="explanation-title">📍 Dòng 24-30: Đọc file, lấy kích thước</div>
+                            <div class="explanation-content">
+                                • <code>f.readline()</code> - Đọc dòng đầu (số n)
+                                <br>• <code>f.tell()</code> - Lưu vị trí bắt đầu data
+                                <br>• <code>f.seek(0, 2)</code> - Nhảy đến cuối file
+                                <br>• <code>f.tell()</code> - Lấy kích thước file
+                            </div>
+                        </div>
+                        <div id="exp1-32" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 32-34: Tính chunk size</div>
+                            <div class="explanation-content">
+                                <code>data_size = file_size - data_start_pos</code>
+                                <br>Kích thước phần dữ liệu (trừ dòng đầu)
+                                <br><br>
+                                <code>chunk_size = data_size // 16</code>
+                                <br>Chia đều cho 16 process
+                            </div>
+                        </div>
+                        <div id="exp1-39" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 39-49: Tạo tasks với điều chỉnh biên</div>
+                            <div class="explanation-content">
+                                Vòng lặp tạo 15 đoạn đầu:
+                                <br><br>
+                                1. Tính <code>target_end</code> = vị trí lý tưởng
+                                <br>2. <code>f.seek(target_end)</code> - Nhảy đến đó
+                                <br>3. Đọc từng ký tự đến khi gặp space
+                                <br><br>
+                                <div class="highlight-note">
+                                    <strong>🔑 MẤU CHỐT:</strong> Không cắt giữa một số! Nếu đang ở giữa số, đọc thêm đến hết số đó.
+                                </div>
+                            </div>
+                        </div>
+                        <div id="exp1-53" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 53-56: Chạy Pool</div>
+                            <div class="explanation-content">
+                                <code>multiprocessing.Pool(processes=16)</code>
+                                <br>Tạo 16 process con
+                                <br><br>
+                                <code>pool.map(worker_task, tasks)</code>
+                                <br>Gửi mỗi task cho một worker, nhận kết quả
+                                <br><br>
+                                <code>sum(results)</code>
+                                <br>Cộng tất cả tổng cục bộ
+                            </div>
+                        </div>
+                        
+                        <div class="nav-buttons">
+                            <button class="nav-btn" onclick="prevLine(1)">← Trước</button>
+                            <button class="nav-btn" onclick="nextLine(1)">Sau →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHALLENGE 2 -->
+        <div id="challenge2" class="code-section">
+            <div class="overview">
+                <h3>🔢 Challenge 2: Fast Doubling Fibonacci</h3>
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="label">Mục đích</div>
+                        <div class="value">Tính F(n) mod q nhanh O(log n)</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Công thức</div>
+                        <div class="value">F(2k), F(2k+1)</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Tối ưu</div>
+                        <div class="value">Pisano, Gap Table</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-card">
+                <div class="code-header">
+                    <h2>fib_pair_mod - Fast Doubling</h2>
+                    <span class="file-badge">challenge2.py</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-block">
+<div class="code-line" onclick="showExplanation(2, 17)"><span class="line-number">17</span><span class="line-content"><span class="keyword">def</span> <span class="function">fib_pair_mod</span>(n, q):</span></div>
+<div class="code-line" onclick="showExplanation(2, 18)"><span class="line-number">18</span><span class="line-content">    a = <span class="number">0</span></span></div>
+<div class="code-line" onclick="showExplanation(2, 19)"><span class="line-number">19</span><span class="line-content">    b = <span class="number">1</span></span></div>
+<div class="code-line" onclick="showExplanation(2, 20)"><span class="line-number">20</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(2, 21)"><span class="line-number">21</span><span class="line-content">    <span class="keyword">if</span> n == <span class="number">0</span>:</span></div>
+<div class="code-line" onclick="showExplanation(2, 22)"><span class="line-number">22</span><span class="line-content">        <span class="keyword">return</span> <span class="number">0</span>, <span class="number">1</span></span></div>
+<div class="code-line" onclick="showExplanation(2, 23)"><span class="line-number">23</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(2, 24)"><span class="line-number">24</span><span class="line-content">    mask = <span class="number">1</span> << (n.bit_length() - <span class="number">1</span>)</span></div>
+<div class="code-line" onclick="showExplanation(2, 25)"><span class="line-number">25</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(2, 26)"><span class="line-number">26</span><span class="line-content">    <span class="keyword">while</span> mask:</span></div>
+<div class="code-line" onclick="showExplanation(2, 27)"><span class="line-number">27</span><span class="line-content">        t = b + b - a</span></div>
+<div class="code-line" onclick="showExplanation(2, 28)"><span class="line-number">28</span><span class="line-content">        c = (a * t) % q  <span class="comment"># F(2k)</span></span></div>
+<div class="code-line" onclick="showExplanation(2, 29)"><span class="line-number">29</span><span class="line-content">        d = (a * a + b * b) % q  <span class="comment"># F(2k+1)</span></span></div>
+<div class="code-line" onclick="showExplanation(2, 30)"><span class="line-number">30</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(2, 31)"><span class="line-number">31</span><span class="line-content">        <span class="keyword">if</span> n & mask:</span></div>
+<div class="code-line" onclick="showExplanation(2, 32)"><span class="line-number">32</span><span class="line-content">            a, b = d, (c + d) % q</span></div>
+<div class="code-line" onclick="showExplanation(2, 33)"><span class="line-number">33</span><span class="line-content">        <span class="keyword">else</span>:</span></div>
+<div class="code-line" onclick="showExplanation(2, 34)"><span class="line-number">34</span><span class="line-content">            a, b = c, d</span></div>
+<div class="code-line" onclick="showExplanation(2, 35)"><span class="line-number">35</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(2, 36)"><span class="line-number">36</span><span class="line-content">        mask >>= <span class="number">1</span></span></div>
+<div class="code-line" onclick="showExplanation(2, 37)"><span class="line-number">37</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(2, 38)"><span class="line-number">38</span><span class="line-content">    <span class="keyword">return</span> a, b</span></div>
+                    </div>
+                    <div class="explanation-panel">
+                        <div id="exp2-17" class="explanation-item active">
+                            <div class="explanation-title">📍 Dòng 17-19: Khởi tạo</div>
+                            <div class="explanation-content">
+                                <code>a = 0</code> = F(0)
+                                <br><code>b = 1</code> = F(1)
+                                <br><br>
+                                Hàm trả về cặp (F(n), F(n+1)) mod q
+                            </div>
+                        </div>
+                        <div id="exp2-21" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 21-22: Base case</div>
+                            <div class="explanation-content">
+                                Nếu n = 0: return (0, 1)
+                                <br><br>
+                                F(0) = 0, F(1) = 1
+                            </div>
+                        </div>
+                        <div id="exp2-24" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 24: Lấy bit cao nhất</div>
+                            <div class="explanation-content">
+                                <code>mask = 1 << (n.bit_length() - 1)</code>
+                                <br><br>
+                                Ví dụ: n = 10 (1010)
+                                <br>bit_length = 4
+                                <br>mask = 1 << 3 = 8 (1000)
+                                <br><br>
+                                Mask dùng để duyệt từng bit của n, từ MSB đến LSB.
+                            </div>
+                        </div>
+                        <div id="exp2-27" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 27-29: Fast doubling</div>
+                            <div class="explanation-content">
+                                Tính cặp (F(2k), F(2k+1)):
+                                <br><br>
+                                <code>c = a * (2*b - a) % q</code> → F(2k)
+                                <br><code>d = a² + b² % q</code> → F(2k+1)
+                                <br><br>
+                                Đây là công thức toán học của fast doubling.
+                            </div>
+                        </div>
+                        <div id="exp2-31" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 31-34: Xử lý bit</div>
+                            <div class="explanation-content">
+                                <code>if n & mask:</code> - Bit hiện tại = 1?
+                                <br><br>
+                                • Bit = 1: <code>a, b = d, c+d</code> → dùng F(2k+1), F(2k+2)
+                                <br>• Bit = 0: <code>a, b = c, d</code> → dùng F(2k), F(2k+1)
+                                <br><br>
+                                <code>mask >>= 1</code> - Di chuyển sang bit kế tiếp
+                            </div>
+                        </div>
+                        <div id="exp2-38" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 38: Kết quả</div>
+                            <div class="explanation-content">
+                                Trả về <code>(a, b)</code> = (F(n), F(n+1)) mod q
+                            </div>
+                        </div>
+                        
+                        <div class="nav-buttons">
+                            <button class="nav-btn" onclick="prevLine(2)">← Trước</button>
+                            <button class="nav-btn" onclick="nextLine(2)">Sau →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHALLENGE 3 -->
+        <div id="challenge3" class="code-section">
+            <div class="overview">
+                <h3>📐 Challenge 3: Parallel Matrix Multiplication</h3>
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="label">Mục đích</div>
+                        <div class="value">Nhân ma trận A × B</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Tối ưu</div>
+                        <div class="value">Transpose B → BT</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Song song</div>
+                        <div class="value">Chia theo dòng</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-card">
+                <div class="code-header">
+                    <h2>compute_block - Worker xử lý một đoạn dòng</h2>
+                    <span class="file-badge">challenge3.py</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-block">
+<div class="code-line" onclick="showExplanation(3, 15)"><span class="line-number">15</span><span class="line-content"><span class="keyword">def</span> <span class="function">compute_block</span>(task):</span></div>
+<div class="code-line" onclick="showExplanation(3, 16)"><span class="line-number">16</span><span class="line-content">    start, end = task</span></div>
+<div class="code-line" onclick="showExplanation(3, 17)"><span class="line-number">17</span><span class="line-content">    </span></div>
+<div class="code-line" onclick="showExplanation(3, 18)"><span class="line-number">18</span><span class="line-content">    result_block = []</span></div>
+<div class="code-line" onclick="showExplanation(3, 19)"><span class="line-number">19</span><span class="line-content">    main_diag = []</span></div>
+<div class="code-line" onclick="showExplanation(3, 20)"><span class="line-number">20</span><span class="line-content">    sec_diag = []</span></div>
+<div class="code-line" onclick="showExplanation(3, 21)"><span class="line-number">21</span><span class="line-content">    block_sum = <span class="number">0</span></span></div>
+<div class="code-line" onclick="showExplanation(3, 22)"><span class="line-number">22</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(3, 23)"><span class="line-number">23</span><span class="line-content">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(start, end):</span></div>
+<div class="code-line" onclick="showExplanation(3, 24)"><span class="line-number">24</span><span class="line-content">        row = []</span></div>
+<div class="code-line" onclick="showExplanation(3, 25)"><span class="line-number">25</span><span class="line-content">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="function">range</span>(N):</span></div>
+<div class="code-line" onclick="showExplanation(3, 26)"><span class="line-number">26</span><span class="line-content">            <span class="comment"># Lấy dòng i của A và cột j của B</span></span></div>
+<div class="code-line" onclick="showExplanation(3, 27)"><span class="line-number">27</span><span class="line-content">            <span class="comment"># Từ BT: cột j = hàng j</span></span></div>
+<div class="code-line" onclick="showExplanation(3, 28)"><span class="line-number">28</span><span class="line-content">            s = <span class="function">sum</span>(A[i][k] * BT[j][k] <span class="keyword">for</span> k <span class="keyword">in</span> <span class="function">range</span>(N))</span></div>
+<div class="code-line" onclick="showExplanation(3, 29)"><span class="line-number">29</span><span class="line-content">            row.append(s)</span></div>
+<div class="code-line" onclick="showExplanation(3, 30)"><span class="line-number">30</span><span class="line-content">            block_sum += s</span></div>
+<div class="code-line" onclick="showExplanation(3, 31)"><span class="line-number">31</span><span class="line-content">        </span></div>
+<div class="code-line" onclick="showExplanation(3, 32)"><span class="line-number">32</span><span class="line-content">        result_block.append(row)</span></div>
+<div class="code-line" onclick="showExplanation(3, 33)"><span class="line-number">33</span><span class="line-content">        main_diag.append(row[i])</span></div>
+<div class="code-line" onclick="showExplanation(3, 34)"><span class="line-number">34</span><span class="line-number">34</span><span class="line-content">        sec_diag.append(row[N - <span class="number">1</span> - i])</span></div>
+<div class="code-line" onclick="showExplanation(3, 35)"><span class="line-number">35</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(3, 36)"><span class="line-number">36</span><span class="line-content">    <span class="keyword">return</span> start, result_block, main_diag, sec_diag, block_sum</span></div>
+                    </div>
+                    <div class="explanation-panel">
+                        <div id="exp3-15" class="explanation-item active">
+                            <div class="explanation-title">📍 Dòng 15-16: Nhận task</div>
+                            <div class="explanation-content">
+                                <code>task = (start, end)</code>
+                                <br><br>
+                                Worker xử lý các dòng từ <code>start</code> đến <code>end - 1</code>
+                            </div>
+                        </div>
+                        <div id="exp3-18" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 18-21: Khởi tạo kết quả</div>
+                            <div class="explanation-content">
+                                • <code>result_block</code>: các dòng kết quả của block
+                                <br>• <code>main_diag</code>: phần đường chéo chính
+                                <br>• <code>sec_diag</code>: phần đường chéo phụ
+                                <br>• <code>block_sum</code>: tổng các phần tử trong block
+                            </div>
+                        </div>
+                        <div id="exp3-23" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 23-30: Nhân ma trận</div>
+                            <div class="explanation-content">
+                                <code>C[i][j] = Σ A[i][k] * BT[j][k]</code>
+                                <br><br>
+                                Vòng ngoài: duyệt dòng i của A
+                                <br>Vòng trong: duyệt cột j của B (từ BT)
+                                <br><br>
+                                <div class="highlight-note">
+                                    <strong>💡 Tối ưu:</strong> Dùng BT thay vì B để truy cập liên tục trong memory (cache-friendly)
+                                </div>
+                            </div>
+                        </div>
+                        <div id="exp3-33" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 33-34: Lấy đường chéo</div>
+                            <div class="explanation-content">
+                                <code>main_diag.append(row[i])</code>
+                                <br>Đường chéo chính: C[i][i]
+                                <br><br>
+                                <code>sec_diag.append(row[N-1-i])</code>
+                                <br>Đường chéo phụ: C[i][N-1-i]
+                            </div>
+                        </div>
+                        <div id="exp3-36" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 36: Trả kết quả</div>
+                            <div class="explanation-content">
+                                Trả về tuple gồm:
+                                <br>• <code>start</code>: vị trí bắt đầu (để ghép đúng chỗ)
+                                <br>• <code>result_block</code>: các dòng kết quả
+                                <br>• <code>main_diag</code>, <code>sec_diag</code>: đường chéo
+                                <br>• <code>block_sum</code>: tổng block
+                            </div>
+                        </div>
+                        
+                        <div class="nav-buttons">
+                            <button class="nav-btn" onclick="prevLine(3)">← Trước</button>
+                            <button class="nav-btn" onclick="nextLine(3)">Sau →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHALLENGE 4 -->
+        <div id="challenge4" class="code-section">
+            <div class="overview">
+                <h3>📊 Challenge 4: Parallel Sorting</h3>
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="label">Mục đích</div>
+                        <div class="value">Sort theo v giảm, label tăng</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Kỹ thuật</div>
+                        <div class="value">Encode tuple sort key</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Song song</div>
+                        <div class="value">Sort từng chunk</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-card">
+                <div class="code-header">
+                    <h2>MAIN - Đọc và encode records</h2>
+                    <span class="file-badge">challenge4.py</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-block">
+<div class="code-line" onclick="showExplanation(4, 28)"><span class="line-number">28</span><span class="line-content">    records = []</span></div>
+<div class="code-line" onclick="showExplanation(4, 29)"><span class="line-number">29</span><span class="line-content">    pos = <span class="number">1</span>  <span class="comment"># Bỏ qua token đầu (n)</span></span></div>
+<div class="code-line" onclick="showExplanation(4, 30)"><span class="line-number">30</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(4, 31)"><span class="line-number">31</span><span class="line-content">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(n):</span></div>
+<div class="code-line" onclick="showExplanation(4, 32)"><span class="line-number">32</span><span class="line-content">        v = <span class="function">int</span>(tokens[pos]); pos += <span class="number">1</span></span></div>
+<div class="code-line" onclick="showExplanation(4, 33)"><span class="line-number">33</span><span class="line-content">        label = tokens[pos]; pos += <span class="number">1</span></span></div>
+<div class="code-line" onclick="showExplanation(4, 34)"><span class="line-number">34</span><span class="line-content">        </span></div>
+<div class="code-line" onclick="showExplanation(4, 35)"><span class="line-number">35</span><span class="line-content">        <span class="comment"># Encode: (-v, label, i, v, label)</span></span></div>
+<div class="code-line" onclick="showExplanation(4, 36)"><span class="line-number">36</span><span class="line-content">        <span class="comment"># -v: tăng dần = v giảm dần</span></span></div>
+<div class="code-line" onclick="showExplanation(4, 37)"><span class="line-number">37</span><span class="line-content">        <span class="comment"># label: tăng dần theo bytes</span></span></div>
+<div class="code-line" onclick="showExplanation(4, 38)"><span class="line-number">38</span><span class="line-content">        <span class="comment"># i: index gốc (độ ổn định)</span></span></div>
+<div class="code-line" onclick="showExplanation(4, 39)"><span class="line-number">39</span><span class="line-content">        records.append((-v, label, i, v, label))</span></div>
+<div class="code-line" onclick="showExplanation(4, 40)"><span class="line-number">40</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(4, 41)"><span class="line-number">41</span><span class="line-content">    <span class="keyword">if</span> n < <span class="number">20000</span>:</span></div>
+<div class="code-line" onclick="showExplanation(4, 42)"><span class="line-number">42</span><span class="line-content">        records.sort()</span></div>
+<div class="code-line" onclick="showExplanation(4, 43)"><span class="line-number">43</span><span class="line-content">        <span class="keyword">return</span> [(r[<span class="number">3</span>], r[<span class="number">4</span>].decode()) <span class="keyword">for</span> r <span class="keyword">in</span> records]</span></div>
+                    </div>
+                    <div class="explanation-panel">
+                        <div id="exp4-28" class="explanation-item active">
+                            <div class="explanation-title">📍 Dòng 28-29: Khởi tạo</div>
+                            <div class="explanation-content">
+                                <code>records = []</code> - Danh sách chứa các record đã encode
+                                <br><code>pos = 1</code> - Bỏ qua token đầu (n)
+                            </div>
+                        </div>
+                        <div id="exp4-31" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 31-33: Đọc từng record</div>
+                            <div class="explanation-content">
+                                Mỗi record gồm: <code>(v, label)</code>
+                                <br><br>
+                                • <code>tokens[pos]</code> → v (số)
+                                <br>• <code>tokens[pos+1]</code> → label (bytes)
+                            </div>
+                        </div>
+                        <div id="exp4-35" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 35-39: Encode sort key</div>
+                            <div class="explanation-content">
+                                <code>key = (-v, label, i, v, label)</code>
+                                <br><br>
+                                <strong>Giải thích tuple:</strong>
+                                <br>• <code>-v</code>: Python sort tăng dần → v giảm dần
+                                <br>• <code>label</code>: sort tăng dần theo bytes
+                                <br>• <code>i</code>: index gốc → độ ổn định
+                                <br>• <code>v, label</code>: để phục hồi kết quả
+                                <br><br>
+                                <div class="highlight-note">
+                                    <strong>🔑 Mẹo:</strong> Tuple sort so sánh từ trái sang phải, dừng khi có kết quả.
+                                </div>
+                            </div>
+                        </div>
+                        <div id="exp4-41" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 41-43: Sort và trả kết quả</div>
+                            <div class="explanation-content">
+                                <code>if n < 20000:</code> - Nếu nhỏ, sort trực tiếp
+                                <br><br>
+                                <code>records.sort()</code> - Sort theo tuple
+                                <br><br>
+                                <code>[(r[3], r[4].decode()) for r in records]</code>
+                                <br>Phục hồi: lấy v (index 3) và label (index 4)
+                            </div>
+                        </div>
+                        
+                        <div class="nav-buttons">
+                            <button class="nav-btn" onclick="prevLine(4)">← Trước</button>
+                            <button class="nav-btn" onclick="nextLine(4)">Sau →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHALLENGE 5 -->
+        <div id="challenge5" class="code-section">
+            <div class="overview">
+                <h3>🔍 Challenge 5: Byte-Range Search</h3>
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="label">Mục đích</div>
+                        <div class="value">Tìm index của key</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Thách thức</div>
+                        <div class="value">Token boundary</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Song song</div>
+                        <div class="value">Chia body theo byte</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-card">
+                <div class="code-header">
+                    <h2>_is_boundary - Kiểm tra ranh giới token</h2>
+                    <span class="file-badge">challenge5.py</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-block">
+<div class="code-line" onclick="showExplanation(5, 25)"><span class="line-number">25</span><span class="line-content"><span class="keyword">def</span> <span class="function">_is_boundary</span>(body, key, pos):</span></div>
+<div class="code-line" onclick="showExplanation(5, 26)"><span class="line-number">26</span><span class="line-content">    <span class="comment"># Kiểm tra trước key</span></span></div>
+<div class="code-line" onclick="showExplanation(5, 27)"><span class="line-number">27</span><span class="line-content">    <span class="keyword">if</span> pos > <span class="number">0</span> <span class="keyword">and</span> <span class="keyword">not</span> body[pos - <span class="number">1</span>].isspace():</span></div>
+<div class="code-line" onclick="showExplanation(5, 28)"><span class="line-number">28</span><span class="line-content">        <span class="keyword">return</span> <span class="keyword">False</span></span></div>
+<div class="code-line" onclick="showExplanation(5, 29)"><span class="line-number">29</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(5, 30)"><span class="line-number">30</span><span class="line-content">    <span class="comment"># Kiểm tra sau key</span></span></div>
+<div class="code-line" onclick="showExplanation(5, 31)"><span class="line-number">31</span><span class="line-content">    end = pos + <span class="function">len</span>(key)</span></div>
+<div class="code-line" onclick="showExplanation(5, 32)"><span class="line-number">32</span><span class="line-content">    <span class="keyword">if</span> end < <span class="function">len</span>(body) <span class="keyword">and</span> <span class="keyword">not</span> body[end].isspace():</span></div>
+<div class="code-line" onclick="showExplanation(5, 33)"><span class="line-number">33</span><span class="line-content">        <span class="keyword">return</span> <span class="keyword">False</span></span></div>
+<div class="code-line" onclick="showExplanation(5, 34)"><span class="line-number">34</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(5, 35)"><span class="line-number">35</span><span class="line-content">    <span class="keyword">return</span> <span class="keyword">True</span></span></div>
+                    </div>
+                    <div class="explanation-panel">
+                        <div id="exp5-25" class="explanation-item active">
+                            <div class="explanation-title">📍 Dòng 25: Định nghĩa hàm</div>
+                            <div class="explanation-content">
+                                <code>_is_boundary(body, key, pos)</code>
+                                <br><br>
+                                Kiểm tra xem <code>key</code> tại vị trí <code>pos</code> trong <code>body</code>
+                                có phải là token riêng biệt hay không.
+                            </div>
+                        </div>
+                        <div id="exp5-27" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 27-28: Kiểm tra trước key</div>
+                            <div class="explanation-content">
+                                <code>if pos > 0 and not body[pos-1].isspace():</code>
+                                <br><br>
+                                Nếu không ở đầu string VÀ ký tự trước không phải whitespace → <code>False</code>
+                                <br><br>
+                                Ví dụ: Tìm "10" trong "110"
+                                <br>• pos = 1 (chỉ số của "10" trong "110")
+                                <br>• body[0] = "1" không phải space
+                                <br>• → Không phải token riêng!
+                            </div>
+                        </div>
+                        <div id="exp5-31" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 31-33: Kiểm tra sau key</div>
+                            <div class="explanation-content">
+                                <code>end = pos + len(key)</code>
+                                <br><code>if end < len(body) and not body[end].isspace():</code>
+                                <br><br>
+                                Nếu không ở cuối string VÀ ký tự sau không phải whitespace → <code>False</code>
+                                <br><br>
+                                Ví dụ: Tìm "10" trong "100"
+                                <br>• key = "10", len = 2
+                                <br>• end = 2, body[2] = "0" không phải space
+                                <br>• → Không phải token riêng!
+                            </div>
+                        </div>
+                        <div id="exp5-35" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 35: Kết quả</div>
+                            <div class="explanation-content">
+                                Nếu cả hai điều kiện đều thỏa mãn (hoặc ở đầu/cuối) → <code>True</code>
+                                <br><br>
+                                <div class="highlight-note">
+                                    <strong>✅ Đúng:</strong> "10 110" → "10" là token riêng (có space trước và sau)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="nav-buttons">
+                            <button class="nav-btn" onclick="prevLine(5)">← Trước</button>
+                            <button class="nav-btn" onclick="nextLine(5)">Sau →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHALLENGE 6 -->
+        <div id="challenge6" class="code-section">
+            <div class="overview">
+                <h3>📍 Challenge 6: Closest Pair</h3>
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="label">Mục đích</div>
+                        <div class="value">Tìm 2 điểm gần nhất</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Kỹ thuật</div>
+                        <div class="value">Encode 64-bit + sort</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="label">Tối ưu</div>
+                        <div class="value">Scan 8 láng giềng</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-card">
+                <div class="code-header">
+                    <h2>_encode_dataset - Mã hóa điểm</h2>
+                    <span class="file-badge">challenge6.py</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-block">
+<div class="code-line" onclick="showExplanation(6, 299)"><span class="line-number">299</span><span class="line-content"><span class="keyword">def</span> <span class="function">_encode_dataset</span>(data, left, right):</span></div>
+<div class="code-line" onclick="showExplanation(6, 300)"><span class="line-number">300</span><span class="line-content">    offset = <span class="number">1000000000</span></span></div>
+<div class="code-line" onclick="showExplanation(6, 301)"><span class="line-number">301</span><span class="line-content">    <span class="keyword">return</span> [</span></div>
+<div class="code-line" onclick="showExplanation(6, 302)"><span class="line-number">302</span><span class="line-content">        ((data[i] + offset) << <span class="number">32</span>) | (data[i + <span class="number">1</span> + offset)</span></div>
+<div class="code-line" onclick="showExplanation(6, 303)"><span class="line-number">303</span><span class="line-content">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(left, right, <span class="number">2</span>)</span></div>
+<div class="code-line" onclick="showExplanation(6, 304)"><span class="line-number">304</span><span class="line-content">    ]</span></div>
+                    </div>
+                    <div class="explanation-panel">
+                        <div id="exp6-299" class="explanation-item active">
+                            <div class="explanation-title">📍 Dòng 299-304: Encode điểm</div>
+                            <div class="explanation-content">
+                                <code>encoded = ((x + OFFSET) << 32) | (y + OFFSET)</code>
+                                <br><br>
+                                <strong>Ví dụ:</strong> P(5, 3)
+                                <br>• x + OFFSET = 5 + 10⁹ = 1000000005
+                                <br>• y + OFFSET = 3 + 10⁹ = 1000000003
+                                <br>• x << 32 = 1000000005 << 32
+                                <br>• encoded = (x << 32) | y
+                                <br><br>
+                                <div class="highlight-note">
+                                    <strong>🔑 Tại sao dùng 64-bit?</strong>
+                                    <br>• 32 bits cho x: cho phép tọa độ ±2³¹
+                                    <br>• 32 bits cho y: cho phép tọa độ ±2³¹
+                                    <br>• Sort encoded = sort theo x, rồi theo y
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="nav-buttons">
+                            <button class="nav-btn" onclick="prevLine(6)">← Trước</button>
+                            <button class="nav-btn" onclick="nextLine(6)">Sau →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-card">
+                <div class="code-header">
+                    <h2>_scan_range - Tìm closest pair</h2>
+                    <span class="file-badge">challenge6.py</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-block">
+<div class="code-line" onclick="showExplanation(6, 32)"><span class="line-number">32</span><span class="line-content"><span class="keyword">def</span> <span class="function">_scan_range</span>(xs, ys, left, right):</span></div>
+<div class="code-line" onclick="showExplanation(6, 33)"><span class="line-number">33</span><span class="line-content">    n = <span class="function">len</span>(xs)</span></div>
+<div class="code-line" onclick="showExplanation(6, 34)"><span class="line-number">34</span><span class="line-content">    <span class="keyword">if</span> n < <span class="number">2</span>:</span></div>
+<div class="code-line" onclick="showExplanation(6, 35)"><span class="line-number">35</span><span class="line-content">        <span class="keyword">return</span> _INF</span></div>
+<div class="code-line" onclick="showExplanation(6, 36)"><span class="line-number">36</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(6, 37)"><span class="line-number">37</span><span class="line-content">    best = _INF</span></div>
+<div class="code-line" onclick="showExplanation(6, 38)"><span class="line-number">38</span><span class="line-content">    i = left</span></div>
+<div class="code-line" onclick="showExplanation(6, 39)"><span class="line-number">39</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(6, 40)"><span class="line-number">40</span><span class="line-content">    <span class="keyword">while</span> i < right:</span></div>
+<div class="code-line" onclick="showExplanation(6, 41)"><span class="line-number">41</span><span class="line-content">        x = xs[i]; y = ys[i]</span></div>
+<div class="code-line" onclick="showExplanation(6, 42)"><span class="line-number">42</span><span class="line-content">        end = <span class="function">min</span>(i + <span class="number">9</span>, n)  <span class="comment"># Scan 8 điểm kế tiếp</span></span></div>
+<div class="code-line" onclick="showExplanation(6, 43)"><span class="line-number">43</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(6, 44)"><span class="line-number">44</span><span class="line-content">        j = i + <span class="number">1</span></span></div>
+<div class="code-line" onclick="showExplanation(6, 45)"><span class="line-number">45</span><span class="line-content">        <span class="keyword">while</span> j < end:</span></div>
+<div class="code-line" onclick="showExplanation(6, 46)"><span class="line-number">46</span><span class="line-content">            dx = xs[j] - x</span></div>
+<div class="code-line" onclick="showExplanation(6, 47)"><span class="line-number">47</span><span class="line-content">            <span class="keyword">if</span> dx * dx >= best:</span></div>
+<div class="code-line" onclick="showExplanation(6, 48)"><span class="line-number">48</span><span class="line-content">                <span class="keyword">break</span>  <span class="comment"># Early break!</span></span></div>
+<div class="code-line" onclick="showExplanation(6, 49)"><span class="line-number">49</span><span class="line-content">            dy = ys[j] - y</span></div>
+<div class="code-line" onclick="showExplanation(6, 50)"><span class="line-number">50</span><span class="line-content">            dist = dx * dx + dy * dy</span></div>
+<div class="code-line" onclick="showExplanation(6, 51)"><span class="line-number">51</span><span class="line-content">            <span class="keyword">if</span> dist < best:</span></div>
+<div class="code-line" onclick="showExplanation(6, 52)"><span class="line-number">52</span><span class="line-number">52</span><span class="line-content">                best = dist</span></div>
+<div class="code-line" onclick="showExplanation(6, 53)"><span class="line-number">53</span><span class="line-content">            j += <span class="number">1</span></span></div>
+<div class="code-line" onclick="showExplanation(6, 54)"><span class="line-number">54</span><span class="line-content">        i += <span class="number">1</span></span></div>
+<div class="code-line" onclick="showExplanation(6, 55)"><span class="line-number">55</span><span class="line-content"></span></div>
+<div class="code-line" onclick="showExplanation(6, 56)"><span class="line-number">56</span><span class="line-content">    <span class="keyword">return</span> best</span></div>
+                    </div>
+                    <div class="explanation-panel">
+                        <div id="exp6-32" class="explanation-item active">
+                            <div class="explanation-title">📍 Dòng 32-35: Base case</div>
+                            <div class="explanation-content">
+                                <code>if n < 2: return _INF</code>
+                                <br><br>
+                                Cần ít nhất 2 điểm để tính khoảng cách.
+                            </div>
+                        </div>
+                        <div id="exp6-37" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 37: Khởi tạo</div>
+                            <div class="explanation-content">
+                                <code>best = _INF</code>
+                                <br><br>
+                                _INF = 10⁴⁰ (số rất lớn)
+                                <br>best lưu khoảng cách nhỏ nhất tìm được
+                            </div>
+                        </div>
+                        <div id="exp6-42" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 42: Scan 8 láng giềng</div>
+                            <div class="explanation-content">
+                                <code>end = min(i + 9, n)</code>
+                                <br><br>
+                                Thay vì so sánh với TẤT CẢ các điểm (O(n²)), chỉ so sánh với 8 điểm kế tiếp.
+                                <br><br>
+                                <div class="highlight-note">
+                                    <strong>⚡ Heuristic:</strong> Closest pair thường gần nhau trong sorted order. Không cần kiểm tra xa.
+                                </div>
+                            </div>
+                        </div>
+                        <div id="exp6-47" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 47-48: Early break</div>
+                            <div class="explanation-content">
+                                <code>if dx * dx >= best: break</code>
+                                <br><br>
+                                Nếu khoảng cách theo x lớn hơn best, không cần kiểm tra tiếp.
+                                <br><br>
+                                <strong>Early break = tối ưu:</strong> Bỏ qua những điểm quá xa mà không cần tính khoảng cách thực.
+                            </div>
+                        </div>
+                        <div id="exp6-56" class="explanation-item">
+                            <div class="explanation-title">📍 Dòng 56: Kết quả</div>
+                            <div class="explanation-content">
+                                Trả về <code>best</code> = bình phương khoảng cách nhỏ nhất
+                                <br><br>
+                                (Chưa tính sqrt, sẽ tính ở hàm gọi để tránh mất độ chính xác)
+                            </div>
+                        </div>
+                        
+                        <div class="nav-buttons">
+                            <button class="nav-btn" onclick="prevLine(6)">← Trước</button>
+                            <button class="nav-btn" onclick="nextLine(6)">Sau →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentLine = {1: 1, 2: 17, 3: 15, 4: 28, 5: 25, 6: 32};
+        const maxLines = {
+            1: [1, 19, 56],
+            2: [17, 38],
+            3: [15, 36],
+            4: [28, 43],
+            5: [25, 35],
+            6: [32, 56, 304]
+        };
+        
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.code-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
+            
+            // Reset line
+            const num = parseInt(sectionId.replace('challenge', ''));
+            currentLine[num] = maxLines[num][0];
+        }
+        
+        function showExplanation(challenge, line) {
+            // Remove current highlight
+            document.querySelectorAll(`#challenge${challenge} .code-line`).forEach(el => el.classList.remove('current'));
+            
+            // Add highlight to selected line
+            const lineEl = document.querySelector(`#challenge${challenge} .code-line:nth-child(${line})`);
+            if (lineEl) lineEl.classList.add('current');
+            
+            // Hide all explanations for this challenge
+            document.querySelectorAll(`#challenge${challenge} .explanation-item`).forEach(el => el.classList.remove('active'));
+            
+            // Show corresponding explanation
+            const expEl = document.getElementById(`exp${challenge}-${line}`);
+            if (expEl) expEl.classList.add('active');
+            
+            currentLine[challenge] = line;
+        }
+        
+        function prevLine(challenge) {
+            const lines = maxLines[challenge];
+            const currentSection = currentLine[challenge];
+            
+            // Find previous section
+            for (let i = lines.length - 1; i >= 0; i--) {
+                if (lines[i] < currentSection) {
+                    showExplanation(challenge, lines[i]);
+                    return;
+                }
+            }
+        }
+        
+        function nextLine(challenge) {
+            const lines = maxLines[challenge];
+            const currentSection = currentLine[challenge];
+            
+            // Find next section
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i] > currentSection) {
+                    showExplanation(challenge, lines[i]);
+                    return;
+                }
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set first explanation as active for each challenge
+            [1, 2, 3, 4, 5, 6].forEach(c => {
+                const firstLine = maxLines[c][0];
+                showExplanation(c, firstLine);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+8
+5 QA
+5 QB
+-1 ID
+9 QA
+5 QA
+5 QA
+9 AA
+-1 AB

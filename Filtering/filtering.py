@@ -5,137 +5,137 @@ import multiprocessing as mp
 import numpy as np
 
 def F(A, pos):
-    global filteredArr
+global filteredArr
 
-    if A[pos] % 2 == 0:
-        filteredArr[pos] = 1
-    else:
-        filteredArr[pos] = 0
+if A[pos] % 2 == 0:
+filteredArr[pos] = 1
+else:
+filteredArr[pos] = 0
 
 
 def filtering(A):
-    global filteredArr
-    filteredArr = Array(c_byte, len(A), lock=False)
+global filteredArr
+filteredArr = Array(c_byte, len(A), lock=False)
 
-    # with ThreadPoolExecutor(max_workers=mp.cpu_count()) as executor:
-    with ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
-        for pos in range(len(A)):
-            executor.submit(F, A, pos).result()
+# with ThreadPoolExecutor(max_workers=mp.cpu_count()) as executor:
+with ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
+for pos in range(len(A)):
+executor.submit(F, A, pos).result()
 
-        return filteredArr[:]
-    
+return filteredArr[:]
+
 
 def dictMerge(dictA, dictB):
-    return {**dictA, **dictB}
+return {**dictA, **dictB}
 
 
 def preSum(A, L, R, preSumDict = {}):    
-    if not (0 <= L <= R <= len(A)):
-        return None
-    
-    if (L == R):
-        preSumDict[L, R] = A[L]
+if not (0 <= L <= R <= len(A)):
+return None
 
-        return A[L], preSumDict
-    
-    mid = (L + R) // 2
-    # with ThreadPoolExecutor(max_workers=mp.cpu_count()) as executor:
-    with ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
-        leftSum, leftDict = executor.submit(preSum, A, L, mid).result()
-        rightSum, rightDict = executor.submit(preSum, A, mid + 1, R).result()
+if (L == R):
+preSumDict[L, R] = A[L]
 
-        sumLR = leftSum + rightSum
-        mergeDict = dictMerge(leftDict, rightDict)
-        mergeDict[L, R] = sumLR
-        
-        return sumLR, mergeDict
+return A[L], preSumDict
+
+mid = (L + R) // 2
+# with ThreadPoolExecutor(max_workers=mp.cpu_count()) as executor:
+with ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
+leftSum, leftDict = executor.submit(preSum, A, L, mid).result()
+rightSum, rightDict = executor.submit(preSum, A, mid + 1, R).result()
+
+sumLR = leftSum + rightSum
+mergeDict = dictMerge(leftDict, rightDict)
+mergeDict[L, R] = sumLR
+
+return sumLR, mergeDict
 
 
 def prefixSum(A, L, R, offset, preSumDict):
-    global prefixSumArray
+global prefixSumArray
 
-    if not (0 <= L <= R <= len(A)):
-        return
-    
-    if (L == R):
-        prefixSumArray[L] = A[L] + offset
-        return
-    
-    mid = (L + R) // 2
-    leftSum = preSumDict[L, mid]
+if not (0 <= L <= R <= len(A)):
+return
 
-    # with ThreadPoolExecutor(max_workers=mp.cpu_count()) as executor:
-    with ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
-        executor.submit(prefixSum, A, L, mid, offset, preSumDict).result()
-        executor.submit(prefixSum, A, mid + 1, R, offset + leftSum, preSumDict).result()
+if (L == R):
+prefixSumArray[L] = A[L] + offset
+return
+
+mid = (L + R) // 2
+leftSum = preSumDict[L, mid]
+
+# with ThreadPoolExecutor(max_workers=mp.cpu_count()) as executor:
+with ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
+executor.submit(prefixSum, A, L, mid, offset, preSumDict).result()
+executor.submit(prefixSum, A, mid + 1, R, offset + leftSum, preSumDict).result()
 
 
 def getPrefixSum(A):
-    global prefixSumArray
+global prefixSumArray
 
-    _, preSumDict = preSum(A, 0, len(filteredArr) - 1)
-    prefixSumArray = Array(c_int, [0] * len(A), lock=False)
+_, preSumDict = preSum(A, 0, len(filteredArr) - 1)
+prefixSumArray = Array(c_int, [0] * len(A), lock=False)
 
-    prefixSum(A, 0, len(filteredArr) - 1, 0, preSumDict)
+prefixSum(A, 0, len(filteredArr) - 1, 0, preSumDict)
 
-    return prefixSumArray[:]
+return prefixSumArray[:]
 
 
 def check(A, pos, prefixSumSatisfy, prefixSumNonSatisfy):
-    global satisfyArr
-    global nonSatisfyArr
+global satisfyArr
+global nonSatisfyArr
 
-    if prefixSumSatisfy[pos] != prefixSumSatisfy[pos - 1]:
-        satisfyArr[prefixSumSatisfy[pos] - 1] = A[pos]
-    
-    if prefixSumNonSatisfy[pos] != prefixSumNonSatisfy[pos - 1]:
-        nonSatisfyArr[prefixSumNonSatisfy[pos] - 1] = A[pos]
+if prefixSumSatisfy[pos] != prefixSumSatisfy[pos - 1]:
+satisfyArr[prefixSumSatisfy[pos] - 1] = A[pos]
+
+if prefixSumNonSatisfy[pos] != prefixSumNonSatisfy[pos - 1]:
+nonSatisfyArr[prefixSumNonSatisfy[pos] - 1] = A[pos]
 
 def indexMinus(A, size):
-    result = [0] * size
-    for i in range(size):
-        result[i] = i - A[i] + 1
-    
-    return result
+result = [0] * size
+for i in range(size):
+result[i] = i - A[i] + 1
+
+return result
 
 
 def packing(A, prefixSumSatisfy, prefixSumNonSatisfy):
-    global satisfyArr
-    global nonSatisfyArr
+global satisfyArr
+global nonSatisfyArr
 
-    satisfyArr = Array(c_int, [0] * prefixSumSatisfy[-1], lock=False)
-    nonSatisfyArr = Array(c_int, [0] * prefixSumNonSatisfy[-1], lock=False)
+satisfyArr = Array(c_int, [0] * prefixSumSatisfy[-1], lock=False)
+nonSatisfyArr = Array(c_int, [0] * prefixSumNonSatisfy[-1], lock=False)
 
 
-    if prefixSumSatisfy[0] == 1:
-        satisfyArr[0] = A[0]
+if prefixSumSatisfy[0] == 1:
+satisfyArr[0] = A[0]
 
-    if prefixSumNonSatisfy[0] == 1:
-        nonSatisfyArr[0] = A[0]
+if prefixSumNonSatisfy[0] == 1:
+nonSatisfyArr[0] = A[0]
 
-    # with ThreadPoolExecutor(max_workers=mp.cpu_count()) as executor:
-    with ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
-        for i in range(1, len(prefixSumSatisfy)):
-            executor.submit(check, A, i, prefixSumSatisfy, prefixSumNonSatisfy)
-    
-    return satisfyArr[:], nonSatisfyArr[:]
-        
+# with ThreadPoolExecutor(max_workers=mp.cpu_count()) as executor:
+with ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
+for i in range(1, len(prefixSumSatisfy)):
+executor.submit(check, A, i, prefixSumSatisfy, prefixSumNonSatisfy)
+
+return satisfyArr[:], nonSatisfyArr[:]
+
 
 if __name__ == '__main__':
-    mp.set_start_method('fork', force=True)
+mp.set_start_method('fork', force=True)
 
-    A = np.random.randint(low=0, high=100, size=10)
-    print(f'Input array: {A}')
+A = np.random.randint(low=0, high=100, size=10)
+print(f'Input array: {A}')
 
-    filteredArr = filtering(A)
-    prefixSumSatisfy = getPrefixSum(filteredArr)    
-    prefixSumNonSatisfy = indexMinus(prefixSumSatisfy, len(prefixSumSatisfy))
-    satisfyArr, nonSatisfyArr = packing(A, prefixSumSatisfy, prefixSumNonSatisfy)
+filteredArr = filtering(A)
+prefixSumSatisfy = getPrefixSum(filteredArr)    
+prefixSumNonSatisfy = indexMinus(prefixSumSatisfy, len(prefixSumSatisfy))
+satisfyArr, nonSatisfyArr = packing(A, prefixSumSatisfy, prefixSumNonSatisfy)
 
-    print(f'Filtered array: {filteredArr[:]}')
-    print(f'Prefix-Sum satisfy filter array: {prefixSumSatisfy}')
-    print(f'Prefix-Sum non-satisfy filter array: {prefixSumNonSatisfy}')
-    print(f'Satisfy F: {satisfyArr}')
-    print(f'Non-Satisfy F: {nonSatisfyArr}')
+print(f'Filtered array: {filteredArr[:]}')
+print(f'Prefix-Sum satisfy filter array: {prefixSumSatisfy}')
+print(f'Prefix-Sum non-satisfy filter array: {prefixSumNonSatisfy}')
+print(f'Satisfy F: {satisfyArr}')
+print(f'Non-Satisfy F: {nonSatisfyArr}')
 
 

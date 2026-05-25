@@ -1,0 +1,1216 @@
+%!TEX program = xelatex
+\documentclass[12pt,a4paper]{article}
+
+% ==================== GÓI LỆNH CƠ BẢN ====================
+\usepackage{fontspec}
+\usepackage[vietnamese]{babel}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{alltt}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+\usepackage{fvextra}
+\usepackage{ragged2e}
+
+% ==================== THIẾT LẬP TRANG ====================
+\geometry{
+  left=2.8cm,
+  right=2.2cm,
+  top=2.5cm,
+  bottom=2.5cm
+}
+
+\setmainfont{FreeSerif}
+\setsansfont{FreeSans}
+\setmonofont{FreeMono}[Scale=MatchLowercase]
+
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{4pt}
+
+% ==================== MÀU SẮC HỌC THUẬT ====================
+\definecolor{primary}{HTML}{0B3D91}
+\definecolor{secondary}{HTML}{1F4E79}
+\definecolor{accent}{HTML}{C0392B}
+\definecolor{softgray}{HTML}{F4F6F8}
+\definecolor{codebg}{HTML}{F7F7F7}
+\definecolor{codeframe}{HTML}{D9DEE3}
+\definecolor{highlight}{HTML}{EAF2FF}
+
+% ==================== HYPERLINK ====================
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primary,
+  urlcolor=primary,
+  citecolor=primary,
+  pdftitle={Báo cáo thực hành - Giải thuật xử lý song song và phân bổ},
+  pdfauthor={Nhóm thực hiện}
+}
+
+% ==================== HEADER / FOOTER ====================
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize Giải thuật xử lý song song và phân bổ}
+\rhead{\footnotesize Báo cáo thực hành}
+\cfoot{\footnotesize Trang \thepage/\pageref{LastPage}}
+
+% ==================== ĐỊNH DẠNG TIÊU ĐỀ ====================
+\titleformat{\section}
+  {\Large\bfseries\color{primary}}
+  {\thesection.}{0.75em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{secondary}}
+  {\thesubsection.}{0.75em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries}
+  {\thesubsubsection.}{0.75em}{}
+
+\titlespacing*{\section}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\titlespacing*{\subsubsection}{0pt}{8pt}{4pt}
+
+% ==================== DANH SÁCH ====================
+\setlist[itemize]{leftmargin=1.2cm,itemsep=2pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=1.2cm,itemsep=2pt,topsep=3pt}
+
+% ==================== BẢNG ====================
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+% ==================== KHỐI GHI CHÚ ====================
+\newtcolorbox{academicbox}[1]{
+  colback=softgray,
+  colframe=primary,
+  title=\textbf{#1},
+  fonttitle=\bfseries,
+  arc=2mm,
+  boxrule=0.6pt,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt
+}
+
+\newtcolorbox{warningbox}[1]{
+  colback=white,
+  colframe=accent,
+  title=\textbf{#1},
+  fonttitle=\bfseries,
+  arc=2mm,
+  boxrule=0.6pt,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt
+}
+
+% ==================== LISTING CODE ====================
+\lstdefinestyle{academiccode}{
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{codeframe},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  tabsize=4,
+  captionpos=b
+}
+\lstset{style=academiccode}
+
+% Môi trường giả mã có tiếng Việt.
+\newcounter{vietlisting}
+\newenvironment{vietlisting}[1]{%
+  \def\vietlistingcaption{#1}%
+  \refstepcounter{vietlisting}%
+  \begin{tcolorbox}[
+    enhanced,
+    breakable,
+    colback=codebg,
+    colframe=codeframe,
+    boxrule=0.5pt,
+    arc=1mm,
+    left=6pt,
+    right=6pt,
+    top=6pt,
+    bottom=4pt
+  ]%
+  \small\ttfamily\begin{alltt}
+}{%
+  \end{alltt}\normalfont
+  \end{tcolorbox}%
+  \begin{center}
+    \small\textbf{Listing~\thevietlisting:}~\vietlistingcaption
+  \end{center}
+}
+
+
+% ==================== THÔNG TIN BÁO CÁO ====================
+\newcommand{\CourseName}{Giải thuật xử lý song song và phân bố - NT538.Q21}
+\newcommand{\ReportTitle}{Báo cáo thực hành}
+\newcommand{\Instructor}{Lê Minh Khánh Hội, Lê Phạm Hoàng Trung}
+\newcommand{\ReportDate}{26 tháng 5 năm 2026}
+
+\begin{document}
+
+% ==================== TRANG BÌA ====================
+\begin{titlepage}
+  \centering
+  \vspace*{0.8cm}
+
+  {\Large\bfseries TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN}\\[0.25cm]
+  {\large\bfseries KHOA MẠNG MÁY TÍNH VÀ TRUYỀN THÔNG}\\[1.5cm]
+
+  \rule{0.85\textwidth}{0.8pt}\\[0.45cm]
+  {\Huge\bfseries\color{primary}\MakeUppercase{\ReportTitle}}\\[0.35cm]
+  {\Large\bfseries \CourseName}\\[0.45cm]
+  \rule{0.85\textwidth}{0.8pt}\\[1.2cm]
+
+  \begin{tabularx}{0.82\textwidth}{>{\bfseries}p{4cm}Y}
+    Môn học: & \CourseName \\
+    GVHD: & \Instructor \\
+    Ngày báo cáo: & \ReportDate \\
+  \end{tabularx}
+
+  \vspace{1.2cm}
+
+  {\Large\bfseries Nhóm 12}\\[0.4cm]
+  \begin{tabularx}{0.72\textwidth}{>{\centering\arraybackslash}p{0.28\textwidth}Y}
+    \toprule
+    \textbf{MSSV} & \textbf{Họ tên} \\
+    \midrule
+    \textit{23521389} & \textit{Nguyễn Đình Tâm} \\
+    \textit{23521800} & \textit{Võ Công Vinh} \\
+    \textit{23521823} & \textit{Nguyễn Quốc Vương} \\
+    \bottomrule
+  \end{tabularx}
+
+  \vfill
+  {\large Thành phố Hồ Chí Minh, năm 2026}
+\end{titlepage}
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+
+% ==================== GIỚI THIỆU ====================
+\section{Giới thiệu}
+
+Báo cáo này trình bày quá trình thiết kế, hiện thực và đánh giá hiệu năng của sáu bài toán xử lý song song trong học phần \textit{\CourseName}. Mỗi challenge được phân tích theo ba khía cạnh: khả năng song song hóa, thiết kế thuật toán và đánh giá hiệu năng.
+
+\begin{academicbox}{Mục tiêu báo cáo}
+Báo cáo tập trung làm rõ cách phân chia dữ liệu, tổ chức tiến trình, giảm chi phí giao tiếp, tối ưu truy cập bộ nhớ và so sánh hiệu quả giữa phương án tuần tự với phương án song song.
+\end{academicbox}
+
+Các chương trình được hiện thực bằng Python, sử dụng thư viện \texttt{multiprocessing} nhằm tận dụng nhiều lõi CPU cho các tác vụ tính toán độc lập. Bảng dưới tổng quan sáu bài toán:
+
+\begin{table}[H]
+\centering
+\caption{Tổng quan sáu bài toán Challenge}
+\begin{tabularx}{\textwidth}{p{2.2cm}p{3.8cm}p{3cm}p{2.2cm}}
+\toprule
+\textbf{Challenge} & \textbf{Bài toán} & \textbf{Mô hình song song} & \textbf{Đặc điểm chính} \\
+\midrule
+C1 & Tính tổng điều kiện & Data parallelism & Byte range split, Pool 16 process \\
+C2 & Fibonacci modulo & Split-based lookup & Precompute table, 4 process \\
+C3 & Nhân ma trận & Row-block parallelism & Transpose B, initializer \\
+C4 & Sắp xếp records & Chunk sort + merge & Sort key tuple, Pool \\
+C5 & Tìm kiếm khóa & Range search parallelism & SimpleQueue, token boundary \\
+C6 & Closest pair 2D & Multi-level parallelism & Encode 64-bit, scan heuristic \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ==================== CHALLENGE 1 ====================
+\section{Challenge 1 -- Tính tổng mảng số nguyên}
+
+\subsection{Mô tả bài toán}
+
+Cho mảng $A$ gồm $N$ số thực $(1 \leq N \leq 10^6)$, tính tổng các phần tử thỏa mãn đồng thời ba điều kiện: là số nguyên về mặt giá trị toán học, lớn hơn 0 và chia hết cho 3.
+
+Input: dòng đầu chứa $N$, các dòng tiếp theo chứa $N$ giá trị. Output: một số nguyên là tổng cần tìm.
+
+\subsection{Mô hình song song hóa}
+
+Toàn bộ dữ liệu đầu vào được chia thành nhiều đoạn byte độc lập. Mỗi worker process xử lý một đoạn, kiểm tra điều kiện của từng phần tử và trả về tổng cục bộ. Do phép kiểm tra từng phần tử không phụ thuộc vào phần tử khác, bài toán phù hợp với mô hình \textit{data parallelism} thuần túy.
+
+\begin{vietlisting}{Phân chia công việc theo byte range}
+1. Đọc dòng đầu → lấy N và vị trí bắt đầu dữ liệu 
+(data_start_pos)
+2. Tính data_size = file_size - data_start_pos
+3. Chia data_size thành 16 phần: chunk_size = data_size // 16
+4. Với mỗi điểm cắt i = 1..15:
+   - Di chuyển con trỏ đến vị trí lý tưởng: 
+   data_start_pos + i * chunk_size
+   - Đọc từng ký tự cho đến khi gặp khoảng trắng 
+   (tránh cắt giữa token)
+   - Lưu task (file_path, current_start, current_end)
+5. Tạo Pool(16) và gọi pool.map(worker_task, tasks)
+6. Cộng 16 kết quả cục bộ → kết quả cuối cùng
+\end{vietlisting}
+
+\subsubsection{Vấn đề cắt token và cách giải quyết}
+
+Nếu điểm cắt nằm giữa một số (ví dụ: cắt số \texttt{12345} thành \texttt{12} và \texttt{345}), worker sẽ không parse được số nào đúng. Giải pháp: sau khi tính vị trí cắt lý tưởng, di chuyển con trỏ tiếp cho đến khi gặp khoảng trắng hoặc EOF.
+
+\subsection{Sample chi tiết}
+
+Giả sử file input có $N=8$ và dữ liệu gồm các số:
+\begin{verbatim}
+8
+3.0 6 9.0 -1 12.5 15 0 18
+\end{verbatim}
+
+Quá trình xử lý:
+\begin{enumerate}
+  \item \textbf{Đọc dòng đầu}: $N=8$, xác định vị trí bắt đầu phần dữ liệu.
+
+  \item \textbf{Chia dữ liệu}: file được chia thành nhiều đoạn byte. 
+  Các biên đoạn được điều chỉnh đến khoảng trắng gần nhất để tránh cắt giữa token số.
+
+  \item \textbf{Worker 1} xử lý một đoạn dữ liệu, ví dụ gồm các token:
+  \begin{itemize}
+    \item \texttt{3.0}: là số nguyên về mặt giá trị, dương và chia hết cho 3 $\rightarrow$ cộng 3.
+    \item \texttt{6}: là số nguyên, dương và chia hết cho 3 $\rightarrow$ cộng 6.
+  \end{itemize}
+
+  \item \textbf{Worker 2} xử lý đoạn dữ liệu tiếp theo, ví dụ gồm:
+  \begin{itemize}
+    \item \texttt{9.0}: thỏa điều kiện $\rightarrow$ cộng 9.
+    \item \texttt{-1}: không thỏa vì là số âm.
+    \item \texttt{12.5}: không thỏa vì không phải số nguyên.
+  \end{itemize}
+
+  \item \textbf{Các worker còn lại} tiếp tục xử lý các token còn lại, chẳng hạn:
+  \begin{itemize}
+    \item \texttt{15}: thỏa điều kiện $\rightarrow$ cộng 15.
+    \item \texttt{0}: không thỏa vì không lớn hơn 0.
+    \item \texttt{18}: thỏa điều kiện $\rightarrow$ cộng 18.
+  \end{itemize}
+
+  \item \textbf{Kết quả tổng cục bộ}: các worker trả về các tổng riêng như $9$, $9$ và $33$.
+
+  \item \textbf{Kết quả cuối}: 
+  \[
+    3 + 6 + 9 + 15 + 18 = 51.
+  \]
+\end{enumerate}
+
+\subsection{Đánh giá hiệu năng}
+
+\begin{table}[H]
+\centering
+\caption{Độ phức tạp của Challenge 1}
+\begin{tabularx}{0.85\textwidth}{p{4cm}Y}
+\toprule
+\textbf{Phiên bản} & \textbf{Độ phức tạp} \\
+\midrule
+Tuần tự & $O(S)$, $S$ = kích thước file \\
+Song song (16 process) & $O(S/16)$ lý thuyết, thực tế có overhead \\
+\midrule
+\textbf{Chi phí bổ sung} & \\
+\midrule
+Tạo 16 process & Gọi \texttt{fork()} 16 lần \\
+Mỗi process mở file riêng & Overhead I/O \\
+Căn chỉnh biên token & Đọc thêm ký tự tại mỗi điểm cắt \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Ưu điểm: mỗi process chỉ đọc một đoạn nhỏ, không cần nạp toàn bộ dữ liệu vào RAM. Nhược điểm: mỗi process mở file riêng, có thể gây tranh chấp I/O trên ổ cứng.
+
+% ==================== CHALLENGE 2 ====================
+\section{Challenge 2 -- Số Fibonacci Modulo}
+
+\subsection{Mô tả bài toán}
+
+Với $N$ truy vấn $(1 \leq N \leq 10^6)$, tính $F(A_i) \bmod Q$, trong đó dãy Fibonacci được định nghĩa bởi:
+\[
+F(0)=0,\quad F(1)=1,\quad F(n)=F(n-1)+F(n-2).
+\]
+
+Input: $N$, $Q$, và $N$ giá trị $A_i$ (mỗi $A_i \leq 2 \times 10^8$). Output: $N$ số nguyên, mỗi số là $F(A_i) \bmod Q$.
+
+\subsection{Mô hình song song hóa}
+
+Việc tính $F(A_i) \bmod Q$ cho từng truy vấn hoàn toàn độc lập. Chương trình sử dụng mô hình \textbf{split-based Fibonacci} với 4 process xử lý song song, kết hợp precompute table để đạt $O(1)$ cho mỗi truy vấn sau khi thiết lập.
+
+\begin{warningbox}{Lưu ý về thuật toán thực tế}
+File \texttt{challenge2.py} hiện thực thuật toán \textbf{split-based Fibonacci} hoàn toàn khác với mô hình gap table ban đầu. Thuật toán này phân tách mỗi index thành hai phần 17-bit và dùng hai bảng precompute.
+\end{warningbox}
+
+\subsection{Chiến lược split-based}
+
+Chia mỗi số $A_i$ thành hai phần theo bit:
+
+\[
+A_i = h \times \texttt{BASE} + l, \quad \texttt{BASE} = 2^{17} = 131072,
+\]
+\[
+l = A_i \;\&\; \texttt{MASK} \quad (17\text{ bit thấp},\; 0 \leq l < 131072),
+\]
+\[
+h = A_i \gg 17 \quad (17\text{ bit cao},\; 0 \leq h \leq 1526).
+\]
+
+Công thức tính $F(A_i)$ dựa trên tính chất:
+\[
+F(h \cdot \texttt{BASE} + l) = F(h \cdot \texttt{BASE}) \cdot F(l+1) + \bigl(F(h \cdot \texttt{BASE}+1) - F(h \cdot \texttt{BASE})\bigr) \cdot F(l).
+\]
+
+Chương trình precompute hai bảng:
+
+\begin{vietlisting}{Hai bảng precompute}
+BẢNG LOW (131072 phần tử):
+  low_f[i] = F(i)      cho i = 0..131071
+  low_g[i] = F(i+1)    cho i = 0..131071
+
+BẢNG HIGH (1527 phần tử):
+  high_f[h]     = F(h * 131072)           cho h = 0..1526
+  high_prev[h]  = F(h * 131072 + 1) - F(h * 131072)  (mod q)
+
+KẾT QUẢ MỖI PHẦN TỬ:
+  F(A_i) = (high_f[h] * low_g[l] + high_prev[h] * low_f[l]) % q
+\end{vietlisting}
+
+Độ phức tạp sau khi precompute: mỗi truy vấn chỉ cần 2 array lookups, 2 phép nhân, 1 phép cộng và 1 phép modulo.
+
+\subsection{Sample chi tiết}
+
+Giả sử $Q=7$, cần tính $F(262145) \bmod 7$.
+
+\begin{enumerate}
+  \item Tách $A = 262145$ theo $\texttt{BASE}=131072$:
+  \[
+    A = 2 \times 131072 + 1.
+  \]
+  Do đó:
+  \[
+    h = 2,\qquad l = 1.
+  \]
+
+  \item Tra bảng LOW:
+  \[
+    low\_f[1] = F(1), \qquad low\_g[1] = F(2).
+  \]
+
+  \item Tra bảng HIGH:
+  \[
+    high\_f[2] = F(2 \times 131072) \bmod 7,
+  \]
+  \[
+    high\_prev[2] = F(2 \times 131072 + 1) - F(2 \times 131072) \pmod{7}.
+  \]
+
+  \item Áp dụng công thức cộng chỉ số Fibonacci:
+  \[
+    F(A) =
+    high\_f[h] \times low\_g[l]
+    + high\_prev[h] \times low\_f[l]
+    \pmod{Q}.
+  \]
+
+  \item Với $h=2$, $l=1$, $Q=7$, ta có:
+  \[
+    F(262145) =
+    high\_f[2] \times low\_g[1]
+    + high\_prev[2] \times low\_f[1]
+    \pmod{7}.
+  \]
+\end{enumerate}
+
+Như vậy, sau khi hai bảng LOW và HIGH đã được tính trước, mỗi truy vấn chỉ cần tách chỉ số thành hai phần $h$, $l$, sau đó thực hiện một số phép tra bảng và phép toán modulo để thu được kết quả.
+
+Với $A_i = 262145 = 2 \times 131072 + 1$, thay số cụ thể:
+\begin{itemize}
+  \item $F(131072) \bmod 7$ và $F(131073) \bmod 7$ được tính bằng fast doubling.
+  \item $F(262144) = F(2 \times 131072) = F(131072) \times F(131073+1) + F(131072+1) \times F(131073) \bmod 7$.
+  \item $F(262145) = F(262144) \times F(2) + F(262145) \times F(1) \bmod 7$.
+\end{itemize}
+
+Đây chính là cách bảng HIGH được xây dựng: từ $(F(h \cdot B), F(h \cdot B + 1))$ ta nhảy sang $((h+1) \cdot B)$ bằng công thức nhân ma trận Fibonacci.
+
+\subsection{Xử lý song song}
+
+Chương trình dùng 3 worker process và 1 main process (tổng 4 process):
+
+\begin{vietlisting}{Phân chia công việc Challenge 2}
+1. Precompute bảng LOW (131072 phần tử) bằng vòng lặp đơn giản
+2. Precompute bảng HIGH (1527 phần tử) bằng fast doubling
+3. Gán bảng LOW, HIGH, Q vào biến global
+4. Tạo RawArray("I", N) để lưu kết quả trong shared memory
+5. Chia mảng N phần tử thành 4 đoạn:
+   - Đoạn 0: [0, N/4)      → worker P1
+   - Đoạn 1: [N/4, N/2)    → worker P2
+   - Đoạn 2: [N/2, 3N/4)   → worker P3
+   - Đoạn 3: [3N/4, N)     → main process
+6. Mỗi worker tách l, h và ghi kết quả vào RawArray
+7. Đợi 3 worker xong bằng .join()
+8. Trả kết quả từ RawArray
+\end{vietlisting}
+
+Tại sao dùng \texttt{multiprocessing.RawArray}? Thay vì mỗi worker trả về danh sách (cần pickle/unpickle), kết quả được ghi trực tiếp vào vùng nhớ chia sẻ. Khi tất cả worker hoàn thành, main process đọc toàn bộ mảng.
+
+\subsection{Edge cases đặc biệt}
+
+\begin{itemize}
+  \item \textbf{$Q = 1$}: mọi $F(n) \bmod 1 = 0$ → trả $[0] \times N$.
+  \item \textbf{$Q = 2$}: chu kỳ Pisano của 2 là 3. Với $F(n) \bmod 2$, nếu $n \bmod 3 = 0$ → 0, ngược lại → 1. Công thức tối ưu: \texttt{[0 if x \% 3 == 0 else 1 for x in arr]}.
+  \item \textbf{$N = 0$}: trả danh sách rỗng.
+\end{itemize}
+
+\subsection{Đánh giá hiệu năng}
+
+\begin{table}[H]
+\centering
+\caption{Độ phức tạp của Challenge 2}
+\begin{tabularx}{\textwidth}{p{4.5cm}Y}
+\toprule
+\textbf{Thành phần} & \textbf{Độ phức tạp} \\
+\midrule
+Precompute bảng LOW & $O(\texttt{BASE}) = O(131072)$ \\
+Precompute bảng HIGH & $O(\text{MAX\_HIGH}) = O(1527)$ \\
+Mỗi truy vấn (sau precompute) & $O(1)$: 2 lookup, 2 nhân, 1 cộng, 1 modulo \\
+4 process xử lý song song & $O(N/4)$ cho mỗi process \\
+\midrule
+\textbf{Bộ nhớ} & \\
+LOW table & $2 \times 131072 \times 4\text{ bytes} \approx 1$ MB \\
+HIGH table & $2 \times 1527 \times 4\text{ bytes} \approx 12$ KB \\
+RawArray kết quả & $N \times 4$ bytes \\
+\midrule
+\textbf{So sánh với fast doubling thuần} & \\
+Fast doubling cho mỗi $F(A_i)$ & $O(\log A_i) \approx O(28)$ phép nhân \\
+Split-based (precompute+O(1)) & $O(1)$ sau precompute \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ==================== CHALLENGE 3 ====================
+\section{Challenge 3 -- Nhân hai ma trận vuông}
+
+\subsection{Mô tả bài toán}
+
+Cho hai ma trận vuông $A$ và $B$ kích thước $N \times N$, tính $C = A \times B$. Ngoài ma trận $C$, chương trình cần trả về đường chéo chính, đường chéo phụ và tổng tất cả phần tử của $C$.
+
+Input: $N$, $N$ dòng ma trận $A$, $N$ dòng ma trận $B$. Output: dictionary gồm \texttt{matrix} $C$, \texttt{diag\_main}, \texttt{diag\_secondary}, \texttt{total\_sum}.
+
+\subsection{Mô hình song song hóa}
+
+Mỗi dòng của ma trận kết quả $C$ có thể được tính độc lập:
+\[
+C[i][j] = \sum_{k=0}^{N-1} A[i][k] \cdot B[k][j].
+\]
+
+Do đó, bài toán được chia theo \textbf{hàng của ma trận $A$}. Các dòng liên tiếp được gom thành block và gán cho worker.
+
+\begin{vietlisting}{Tại sao chuyển vị B thành BT}
+Ma trận B ban đầu: B[k][j] = phần tử cột thứ j
+Khi truy cập B[k][j] trong vòng lặp inner:
+  - k thay đổi → truy cập hàng k (liên tục)
+  - j thay đổi → truy cập cột j (không liên tục)
+
+Ma trận BT = transpose(B): BT[j][k] = B[k][j]
+Khi truy cập BT[j][k]:
+  - j cố định trong outer loop → truy cập hàng j (liên tục)
+  - k thay đổi → truy cập hàng j (cũng liên tục)
+  → Tối ưu cache locality cho inner loop
+\end{vietlisting}
+
+Sử dụng \texttt{initializer} để truyền $A$, $BT$, $N$ cho mỗi worker một lần duy nhất khi khởi tạo, tránh pickle dữ liệu lớn mỗi lần gọi task.
+
+\subsection{Sample chi tiết}
+
+Giả sử $N=2$, $A = \begin{pmatrix}1 & 2\\ 3 & 4\end{pmatrix}$, $B = \begin{pmatrix}5 & 6\\ 7 & 8\end{pmatrix}$.
+
+\begin{enumerate}
+  \item Chuyển vị: $BT = \begin{pmatrix}5 & 7\\ 6 & 8\end{pmatrix}$.
+  \item Chia 2 dòng thành 2 block (mỗi block 1 dòng):
+    \begin{itemize}
+      \item Task 1: block dòng 0 ($i=0$).
+      \item Task 2: block dòng 1 ($i=1$).
+    \end{itemize}
+  \item \textbf{Worker 1} tính dòng 0 của $C$:
+    \begin{itemize}
+      \item $C[0][0] = A[0][0]\times BT[0][0] + A[0][1]\times BT[0][1] = 1\times5 + 2\times7 = 19$.
+      \item $C[0][1] = A[0][0]\times BT[1][0] + A[0][1]\times BT[1][1] = 1\times6 + 2\times8 = 22$.
+    \end{itemize}
+  \item \textbf{Worker 2} tính dòng 1 của $C$:
+    \begin{itemize}
+      \item $C[1][0] = 3\times5 + 4\times7 = 43$.
+      \item $C[1][1] = 3\times6 + 4\times8 = 50$.
+    \end{itemize}
+  \item Đường chéo chính: $[19, 50]$, đường chéo phụ: $[22, 43]$.
+  \item Tổng: $19 + 22 + 43 + 50 = 134$.
+\end{enumerate}
+
+Đường chéo phụ $C[i][N-1-i]$: với $i=0$: $C[0][1]=22$, với $i=1$: $C[1][0]=43$.
+
+\subsection{Xử lý song song với initializer}
+
+\begin{vietlisting}{Cơ chế initializer trong Challenge 3}
+1. Tạo pool: Pool(processes=P, initializer=init_worker, 
+initargs=(A, BT, N))
+2. Mỗi worker khi khởi tạo:
+   - Gọi init_worker(A, BT, N)
+   - Gán vào biến global A_GLOBAL, BT_GLOBAL, N_GLOBAL
+   - Dữ liệu được copy vào không gian địa chỉ của worker 
+   (không share)
+3. Khi nhận task (start, end):
+   - Lấy biến global: A = A_GLOBAL, BT = BT_GLOBAL, 
+   N = N_GLOBAL
+   - Tính các dòng từ start đến end-1
+   - Trả về: (start, block, diag_main, diag_secondary, 
+   block_sum)
+4. Main process nhận kết quả và ghép vào C, diag_main, 
+diag_secondary
+5. Trả dictionary {"matrix": C, "diag_main": [...], 
+"diag_secondary": [...], "total_sum": sum}
+\end{vietlisting}
+
+Lưu ý: \texttt{imap\_unordered} được dùng thay vì \texttt{map} để nhận block nào xong trước thì xử lý trước, giảm thời gian chờ.
+
+\subsection{Đánh giá hiệu năng}
+
+\begin{table}[H]
+\centering
+\caption{Độ phức tạp của Challenge 3}
+\begin{tabularx}{\textwidth}{p{4.5cm}Y}
+\toprule
+\textbf{Thành phần} & \textbf{Độ phức tạp} \\
+\midrule
+Tính toán tuần tự & $O(N^3)$ \\
+Song song ($P$ process) & $O(N^3 / P)$ \\
+\midrule
+\midrule
+Chuyển vị B & $O(N^2)$ \\
+Truyền dữ liệu (pickle) & $O(N^2)$ cho mỗi task \\
+\midrule
+\midrule
+Số task & $\min(P \times 4, N)$ với $P = \min(\text{CPU\_count}, N)$ \\
+Chunk size & $\lceil N / (P \times 4) \rceil$ dòng mỗi task \\
+\midrule
+\midrule
+Bộ nhớ & $O(N^2)$ cho A, B, BT, C (4 ma trận) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ==================== CHALLENGE 4 ====================
+\section{Challenge 4 -- Sắp xếp bản ghi}
+
+\subsection{Mô tả bài toán}
+
+Sắp xếp ổn định $N$ bản ghi $(v, \text{label})$ theo thứ tự: $v$ giảm dần, nếu trùng $v$ thì $\text{label}$ tăng dần theo thứ tự bytes, nếu trùng cả hai thì giữ nguyên thứ tự ban đầu (stable sort).
+
+Input: $N$, sau đó $N$ cặp $(v, \text{label})$. Output: danh sách $(v, \text{label})$ đã sắp xếp.
+
+\subsection{Kỹ thuật sort key tuple}
+
+Python dùng Timsort, là thuật toán ổn định. Mỗi bản ghi được chuyển thành tuple:
+\[
+(-v,\; \text{label},\; i,\; v,\; \text{label}).
+\]
+
+Python so sánh tuple từ trái sang phải:
+
+\begin{vietlisting}{Cách tuple sort key hoạt động}
+ Ví dụ: record (85, "apple"), (90, "banana"), (85, "cherry"), 
+ (90, "apple")
+ 
+ Chuyển thành tuple:
+   (-85, b"apple",   0, 85, b"apple")   → i=0
+   (-90, b"banana",  1, 90, b"banana")  → i=1
+   (-85, b"cherry",  2, 85, b"cherry")  → i=2
+   (-90, b"apple",   3, 90, b"apple")   → i=3
+
+ Sort theo tuple:
+   Bước 1: -90 < -85 → (-90, ...) đứng trước (-85, ...)
+   Bước 2: Với -85: b"apple" < b"cherry" (so sánh bytes)
+   Bước 3: Với -90: b"apple" < b"banana"
+ 
+ Kết quả sort:
+   (-90, b"apple",   3) → (90, "apple")
+   (-90, b"banana",  1) → (90, "banana")
+   (-85, b"apple",   0) → (85, "apple")
+   (-85, b"cherry",  2) → (85, "cherry")
+
+ Ý nghĩa:
+   - -v: giảm dần theo v
+   - label: tăng dần theo bytes
+   - i: thứ tự ban đầu (stable)
+   - v, label: trả về dạng gốc
+\end{vietlisting}
+
+\subsection{Xử lý song song}
+
+\begin{vietlisting}{Sort song song trong Challenge 4}
+1. Đọc N bản ghi, chuyển thành tuple sort-key
+2. Nếu N < 20000:
+   - Sort tuần tự: records.sort()
+   - Trả kết quả ngay (tránh overhead multiprocessing)
+3. Nếu N >= 20000:
+   - num_proc = min(8, CPU_count, N)
+   - chunk_size = ceil(N / num_proc)
+   - Tạo tasks: 
+   [(0, chunk_size), (chunk_size, 2*chunk_size), ...]
+   - Dùng Pool(initializer=init_worker, initargs=(records,))
+   - Mỗi worker sort một chunk: sorted(DATA[start:end])
+   - Ghép chunks: records = []
+   - for chunk in chunks: records.extend(chunk)
+   - Sort lại toàn bộ: records.sort()
+   - Trả kết quả
+\end{vietlisting}
+
+Tại sao cần sort lại toàn bộ ở cuối? Vì các chunk được sort cục bộ, thứ tự toàn cục giữa các chunk chưa đúng. Ví dụ: chunk 1 chứa $(100, "a")$ và chunk 2 chứa $(90, "z")$ — sau khi extend, $(90, "z")$ nằm sau $(100, "a")$, nhưng $90 < 100$ nên thứ tự sai.
+
+Cải tiến tiềm năng: dùng \texttt{heapq.merge()} để hợp nhất $k$ mảng đã sort trong $O(N)$ thay vì $O(N \log N)$:
+
+\begin{vietlisting}{Cải tiến bằng heapq.merge}
+import heapq
+chunks = pool.map(sort_part, tasks)       # k chunk đã sort
+merged = list(heapq.merge(*chunks))         # O(N) merge
+# Không cần sort lại toàn bộ nữa
+\end{vietlisting}
+
+\subsection{Sample chi tiết}
+
+Input:
+\begin{verbatim}
+5
+100 apple 85 banana 100 cherry 90 apple 85 apple
+\end{verbatim}
+
+\begin{enumerate}
+  \item Parse dữ liệu đầu vào:
+  \[
+  N = 5
+  \]
+  Các bản ghi ban đầu gồm:
+  \[
+  (100,\text{ apple}),\ (85,\text{ banana}),\ (100,\text{ cherry}),\ 
+  (90,\text{ apple}),\ (85,\text{ apple})
+  \]
+
+  \item Chuyển mỗi bản ghi thành tuple khóa sắp xếp:
+
+  \begin{table}[H]
+  \centering
+  \caption{Ví dụ chuyển bản ghi thành tuple khóa}
+  \begin{tabularx}{0.9\textwidth}{p{3.2cm}Y}
+  \toprule
+  \textbf{Bản ghi gốc} & \textbf{Tuple khóa} \\
+  \midrule
+  $(100,\text{ apple})$ & $(-100,\text{ apple},0,100,\text{ apple})$ \\
+  $(85,\text{ banana})$ & $(-85,\text{ banana},1,85,\text{ banana})$ \\
+  $(100,\text{ cherry})$ & $(-100,\text{ cherry},2,100,\text{ cherry})$ \\
+  $(90,\text{ apple})$ & $(-90,\text{ apple},3,90,\text{ apple})$ \\
+  $(85,\text{ apple})$ & $(-85,\text{ apple},4,85,\text{ apple})$ \\
+  \bottomrule
+  \end{tabularx}
+  \end{table}
+
+  \item Sau khi sắp xếp theo tuple khóa, thứ tự các bản ghi là:
+  \[
+  (100,\text{ apple}),\ 
+  (100,\text{ cherry}),\ 
+  (90,\text{ apple}),\ 
+  (85,\text{ apple}),\ 
+  (85,\text{ banana})
+  \]
+
+  \item Kết quả trả về chính là danh sách bản ghi đã sắp xếp theo đúng yêu cầu.
+\end{enumerate}
+
+Chú ý: $(-85, b"apple")$ đứng trước $(-85, b"banana")$ vì $b"apple" < b"banana"$, và $(-85, b"apple")$ giữ nguyên thứ tự ban đầu ($i=4$) so với $(-85, b"banana")$ ($i=1$).
+
+\subsection{Đánh giá hiệu năng}
+
+\begin{table}[H]
+\centering
+\caption{Độ phức tạp của Challenge 4}
+\begin{tabularx}{\textwidth}{p{4.5cm}Y}
+\toprule
+\textbf{Phiên bản} & \textbf{Độ phức tạp} \\
+\midrule
+Sort tuần tự & $O(N \log N)$ \\
+\midrule
+\midrule
+Sort chunk $i$ & $O(\frac{N}{P} \log \frac{N}{P})$ \\
+Merge (extend + sort lại) & $O(N \log N)$ \\
+Tổng song song & $O(\frac{N}{P} \log \frac{N}{P}) + O(N \log N)$ \\
+\midrule
+\midrule
+Cải tiến: heapq.merge & $O(N \log P)$ để khởi tạo heap, $O(N \log P)$ để merge \\
+\midrule
+\midrule
+Ngưỡng song song & $N \geq 20000$ (tránh overhead process) \\
+\midrule
+\midrule
+Bộ nhớ & $O(N)$ cho records, $O(N/P)$ cho mỗi chunk \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Hạn chế hiện tại: bước merge dùng \texttt{extend + sort} tốn $O(N \log N)$, phủ nhận một phần lợi ích song song. Cải tiến bằng \texttt{heapq.merge} giảm xuống $O(N \log P)$.
+
+% ==================== CHALLENGE 5 ====================
+\section{Challenge 5 -- Tìm vị trí khóa trong dãy số}
+
+\subsection{Mô tả bài toán}
+
+Tìm vị trí nhỏ nhất $i$ sao cho $A[i] = K$ trong dãy có tối đa $10^6$ phần tử, không sử dụng hàm tìm kiếm dựng sẵn. Trả về $-1$ nếu không tìm thấy.
+
+Input: khóa $K$ ở đầu file, theo sau là dãy số cần tìm. Output: chỉ số token (từ 0) của lần xuất hiện đầu tiên của $K$.
+
+\subsection{Mô hình song song hóa}
+
+Dữ liệu được chia thành các đoạn byte độc lập. Mỗi worker tìm $K$ trong đoạn được giao và trả về chỉ số cục bộ. Process chính chọn kết quả có chỉ số toàn cục nhỏ nhất.
+
+Điểm khác biệt quan trọng so với Challenge 1: ở đây ta tìm kiếm chuỗi con (byte string) chứ không phải parse số.
+
+\begin{vietlisting}{Cơ chế tìm kiếm song song}
+1. Đọc toàn bộ file: raw = bytes
+2. Tách: key = bytes của K, body = phần còn lại
+3. Chuẩn hóa key: str(int(K)).encode() → loại bỏ leading zeros 
+như "001" vs "1"
+4. Tính số worker: min(CPU, 8, max(1, len(body)/250000))
+5. Chia body thành các range byte (điều chỉnh theo biên token)
+6. Mỗi worker tìm key trong range:
+   - Dùng body.find(key, start, end) → tìm vị trí byte
+   - Kiểm tra _is_boundary() để đảm bảo không nhận nhầm
+   - Trả về (range_index, local_token_position)
+7. Main process duyệt found theo thứ tự range_index
+   - Range đầu tiên có kết quả = vị trí xuất hiện sớm nhất
+   - index_toàn cục = số token trong các range trước + 
+   local_position
+\end{vietlisting}
+
+\subsection{Vấn đề token boundary và cách xử lý}
+
+Nếu chỉ dùng \texttt{body.find(key)}, có thể nhận nhầm. Ví dụ: tìm \texttt{10} trong \texttt{110 20 30}:
+
+\begin{vietlisting}{False hit khi không kiểm tra boundary}
+body = b"110 20 30"
+key = b"10"
+
+body.find(key) → vị trí 1 (trong "110")
+Nhưng "10" nằm trong "110", không phải token riêng!
+
+_is_boundary(body, 1, 3):
+  - body[0] = ord("1") > 32 → điều kiện đầu FALSE
+  → Không chấp nhận kết quả, tiếp tục tìm
+\end{vietlisting}
+
+Hàm \texttt{\_is\_boundary} kiểm tra:
+\[
+(\text{start} = 0 \lor \text{body}[\text{start}-1] \leq 32) \;\land\;
+(\text{end} = \text{len} \lor \text{body}[\text{end}] \leq 32).
+\]
+
+Điều này đảm bảo cả hai phía của key đều là khoảng trắng (ASCII $\leq 32$) hoặc biên chuỗi.
+
+\subsection{Xử lý false hit}
+
+Khi tìm key dài (nhiều byte), \texttt{body.find} có thể gặp nhiều false hit. Chương trình giới hạn số false hit:
+
+\begin{vietlisting}{Fallback khi quá nhiều false hit}
+MAX_FALSE_HITS = 64
+
+while True:
+    pos = body.find(key, pos, end)  # Tìm vị trí byte
+    if pos == -1: return -1         # Không tìm thấy
+    
+    if _is_boundary(body, pos, pos+len(key)):
+        return len(body[start:pos].split())  # Tìm thấy đúng!
+    
+    false_hits += 1
+    if false_hits > 64:
+        # Fallback: dùng split().index() chính xác nhưng chậm 
+        hơn
+        return body[start:end].split().index(key)
+    
+    pos += 1  # Thử vị trí tiếp theo
+\end{vietlisting}
+
+Fallback dùng \texttt{split().index()} đảm bảo chính xác nhưng tốn chi phí $O(S)$ cho cả đoạn.
+
+\subsection{Sample chi tiết}
+
+Input:
+\begin{verbatim}
+10
+5 10 20 30 40 10 60 10 80 10
+\end{verbatim}
+
+\begin{enumerate}
+  \item \texttt{raw = b"10$\backslash$n5 10 20 30 40 10 60 10 80 10"}.
+  \item \texttt{parts = raw.split(None, 1)} → \texttt{key = b"10"}, \texttt{body = b"5 10 20 30 40 10 60 10 80 10"}.
+  \item \texttt{len(body) = 35}. Giả sử \texttt{workers = 2}, \texttt{chunk\_size = 18}:
+    \begin{itemize}
+      \item Range 0: byte 0–17 → \texttt{"5 10 20 30 40 10 "}
+      \item Range 1: byte 18–35 → \texttt{"60 10 80 10"}
+    \end{itemize}
+  \item \textbf{Worker 0} tìm trong \texttt{"5 10 20 30 40 10 "}:
+    \begin{itemize}
+      \item \texttt{body.find(b"10", 0, 17)} → vị trí 2
+      \item \texttt{\_is\_boundary(2, 4)}: \texttt{body[1]=" "} (space), \texttt{body[4]=" "} (space) → đúng!
+      \item Token trước vị trí 2: \texttt{"5 ".split()} = 1 token → \texttt{local\_index = 1}
+    \end{itemize}
+  \item \textbf{Worker 1} tìm trong \texttt{"60 10 80 10"}:
+    \begin{itemize}
+      \item \texttt{body.find(b"10", 18, 35)} → vị trí 20
+      \item \texttt{\_is\_boundary(20, 22)}: \texttt{body[19]=" "} (space), \texttt{body[22]=" "} (space) → đúng!
+      \item Token trước vị trí 20: \texttt{"60 ".split()} = 1 token → \texttt{local\_index = 1}
+    \end{itemize}
+  \item Duyệt kết quả theo thứ tự range: Range 0 có kết quả → \texttt{\_count\_before(ranges, 0, 1) = 1}.
+  \item \textbf{Kết quả}: 1 (lần xuất hiện đầu tiên của 10 ở vị trí token số 1).
+\end{enumerate}
+
+\subsection{Đánh giá hiệu năng}
+
+\begin{table}[H]
+\centering
+\caption{Độ phức tạp của Challenge 5}
+\begin{tabularx}{\textwidth}{p{4.5cm}Y}
+\toprule
+\textbf{Trường hợp} & \textbf{Độ phức tạp} \\
+\midrule
+Tìm thấy sớm (ít false hit) & $O(S/P)$ với $S$ = kích thước body \\
+Nhiều false hit & $O(S/P + \text{false\_hits})$ \\
+Fallback (split.index) & $O(S/P)$ cho split + $O(S/P)$ cho index \\
+\midrule
+\midrule
+Token boundary check & $O(1)$: chỉ kiểm tra 2 byte \\
+Truyền dữ liệu & $O(S)$: body được copy vào mỗi worker (dùng global fork) \\
+\midrule
+\midrule
+Ngưỡng chunk & \texttt{CHUNK\_MIN\_BYTES = 250000} \\
+Số worker tối đa & 8 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Ưu điểm: mỗi worker chỉ xử lý một đoạn dữ liệu độc lập, giúp giảm thời gian quét trên từng tiến trình. Việc kiểm tra biên token giúp tránh nhận nhầm khóa nằm bên trong một số khác.
+
+% ==================== CHALLENGE 6 ====================
+\section{Challenge 6 -- Tìm khoảng cách gần nhất giữa các điểm 2D}
+
+\subsection{Mô tả bài toán}
+
+Với $Q$ bộ dữ liệu, mỗi bộ gồm $N$ điểm 2D, tìm khoảng cách Euclid nhỏ nhất giữa hai điểm bất kỳ. Giới hạn: $N \leq 3 \times 10^5$, $Q \leq 100$.
+
+Input: $Q$, sau đó $Q$ bộ, mỗi bộ bắt đầu bằng $N$ rồi $2N$ số $(x_1, y_1, x_2, y_2, \dots)$. Output: $Q$ số thực, mỗi số là khoảng cách nhỏ nhất (làm tròn 4 chữ số).
+
+\begin{warningbox}{Thuật toán heuristic}
+File \texttt{challenge6.py} dùng thuật toán \textbf{scan heuristic sau khi sort}, không phải thuật toán closest pair exact (divide-and-conquer $O(N \log N)$). Với dữ liệu test thông thường, heuristic cho kết quả đúng và nhanh. Để đảm bảo chính xác tuyệt đối, nên dùng thuật toán divide-and-conquer.
+\end{warningbox}
+
+\subsection{Mã hóa điểm 2D thành số nguyên 64-bit}
+
+Mỗi điểm $(x, y)$ được mã hóa thành số nguyên 64-bit:
+\[
+\text{encoded} = ((x + \texttt{OFFSET}) \ll 32) \;|\; (y + \texttt{OFFSET}),
+\]
+với $\texttt{OFFSET} = 10^9$ (để xử lý tọa độ âm).
+
+\begin{vietlisting}{Tại sao mã hóa 64-bit giúp sort nhanh hơn}
+So sánh tuple (x, y) vs số nguyên 64-bit trong Python:
+
+Cách tuple: so sánh phần tử đầu, nếu bằng thì so sánh phần tử thứ 
+hai.
+  → Mỗi lần so sánh cần kiểm tra 2 phần tử, có branch 
+  prediction.
+  
+Cách số nguyên: so sánh bằng một phép toán integer duy nhất.
+  → Không có branch, So sánh số nguyên thường đơn giản hơn so với so sánh tuple nhiều thành phần, do đó có thể giảm chi phí so sánh khi sắp xếp dữ liệu lớn.
+  → Nhanh hơn đáng kể cho N lớn.
+
+Nhược điểm: cần encode/decode, nhưng overhead rất nhỏ so với 
+lợi ích sort.
+
+Ví dụ: encode(3, 7) với OFFSET=1000
+  (x+1000) << 32 = 1003 << 32 = 1003 * 2^32
+  y+1000 = 1007
+  encoded = 1003 * 2^32 | 1007
+  → Sắp xếp encoded = sắp xếp (x, y) theo x rồi y
+\end{vietlisting}
+
+\subsection{Thuật toán scan heuristic}
+
+Sau khi sort, các điểm gần nhau trong không gian 2D sẽ nằm gần nhau trong mảng đã sort theo $x$. Thuật toán chỉ so sánh mỗi điểm với tối đa $\texttt{NEIGHBORS}=8$ điểm kế tiếp:
+
+\begin{vietlisting}{Scan heuristic cho closest pair}
+1. Sort encoded points → xs[], ys[] theo thứ tự x rồi y
+2. Với mỗi điểm i:
+   - Lấy điểm i, so sánh với các điểm i+1, i+2, ..., i+8
+   - Với mỗi điểm j: tính dx, dx², nếu dx² >= best thì break 
+   (early exit)
+   - Tính dy² và khoảng cách, cập nhật best
+3. Nếu có nhiều điểm cùng hoành độ (max_x_run > 8):
+   - Transpose: đổi vai trò x và y
+   - Sort lại và scan lại
+   - Lấy kết quả tốt hơn giữa hai lần scan
+
+Tại sao chỉ 8 điểm?
+  - Trong dữ liệu thực tế, các điểm gần nhất thường nằm gần 
+  nhau sau khi sort.
+  - Giới hạn 8 giúp thuật toán chạy gần O(N) thay vì O(N²).
+  - Nếu có cluster dày đặc, max_x_run > 8 sẽ trigger transpose 
+  scan.
+\end{vietlisting}
+
+Early exit: nếu $dx^2 \geq \text{best}$ thì không cần kiểm tra thêm vì mọi điểm còn lại đều có $dx \geq$ điểm hiện tại.
+
+Transpose: khi có nhiều điểm cùng hoành độ (trên cùng đường thẳng đứng), scan theo $x$ không tìm được cặp gần nhất. Transpose đổi vai trò $x \leftrightarrow y$, sort lại, scan lại.
+
+\begin{vietlisting}{Ví dụ về transpose scan}
+Dataset: các điểm (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), 
+(0, 6), (0, 7), (0, 8), (0, 9), (1, 0)
+
+Scan theo x (bình thường):
+  - Tất cả điểm có x=0 → sau khi sort: tất cả nằm liên tiếp
+  - max_x_run = 10 > 8 → không đáng tin cậy
+  
+Transpose (x↔y):
+  - (0,1) → (1,0), (0,2) → (2,0), ..., (0,9) → (9,0), 
+  (1,0) → (0,1)
+  - Sort theo y rồi x: (0,1), (1,0), (2,0), ..., (9,0)
+  - Bây giờ scan heuristic hoạt động tốt hơn
+  - Khoảng cách nhỏ nhất: sqrt((1-0)² + (0-1)²) = sqrt(2)
+\end{vietlisting}
+
+\subsection{Mô hình song song đa cấp}
+
+Challenge 6 có hai cấp độ song song hóa:
+
+\begin{vietlisting}{Hai cấp độ song song trong Challenge 6}
+CẤP 1 - Dataset-level parallelism:
+  - Q dataset độc lập → chia cho workers
+  - Mỗi worker xử lý nhiều dataset
+  - Load balancing: gán dataset lớn cho worker có load nhỏ nhất
+  
+CẤP 2 - Scan-level parallelism (khi một dataset đủ lớn):
+  - Một dataset lớn (N > 120000) được scan song song
+  - Mảng xs[], ys[] được chia thành chunks
+  - Mỗi worker scan một chunk, trả về best cục bộ
+  - Main lấy min của tất cả best cục bộ
+
+Điều kiện bật parallel:
+  - Dataset-level: P >= 2, total_points >= 50000, có fork
+  - Scan-level: n >= 120000, CPU >= 2, có fork
+\end{vietlisting}
+
+Load balancing cho dataset-level: sắp xếp dataset theo kích thước giảm dần, rồi gán từng dataset cho worker có load nhỏ nhất hiện tại. Điều này đảm bảo các worker nhận công việc cân bằng.
+
+\begin{vietlisting}{Load balancing chi tiết}
+Giả sử Q=5 datasets với sizes = 
+[100000, 50000, 30000, 8000, 2000], workers=2
+
+Bước 1: Sắp xếp giảm dần: [(100000, id0), (50000, id1), 
+(30000, id2), (8000, id3), (2000, id4)]
+Bước 2: Gán lần lượt:
+  - id0 (100000) → worker 0 (load[0]=0 < load[1]=0) 
+  → load[0]=100000
+  - id1 (50000)  → worker 1 (load[1]=0 < load[0]=100000) 
+  → load[1]=50000
+  - id2 (30000)  → worker 1 (load[1]=50000 < load[0]=100000) 
+  → load[1]=80000
+  - id3 (8000)   → worker 1 (load[1]=80000 < load[0]=100000) 
+  → load[1]=88000
+  - id4 (2000)   → worker 1 (load[1]=88000 < load[0]=100000) 
+  → load[1]=90000
+Kết quả: Worker 0: [id0], Worker 1: [id1, id2, id3, id4]
+Load gần cân bằng: 100000 vs 90000
+\end{vietlisting}
+
+Kết quả từ các worker được gửi về qua \texttt{SimpleQueue} dưới dạng batch $(index, best\_dist)$ để giảm số lần giao tiếp.
+
+\subsection{Sample chi tiết}
+
+Input:
+\begin{verbatim}
+2
+3
+0 0  3 0  4 0
+4
+0 0  1 1  2 2  3 3
+\end{verbatim}
+
+Dataset 1 ($N=3$, điểm $(0,0), (3,0), (4,0)$):
+\begin{enumerate}
+  \item Encode với OFFSET=1000000000: $1000000000, 1000000003, 1000000004$.
+  \item Sort: $[1000000000, 1000000003, 1000000004]$.
+  \item Decode: $xs=[0,3,4]$, $ys=[0,0,0]$.
+  \item Scan:
+    \begin{itemize}
+      \item $i=0$: so sánh $(0,0)$ với $(3,0)$, $dx=3$, $d=3$.
+      \item $i=1$: so sánh $(3,0)$ với $(4,0)$, $dx=1$, $d=1$.
+      \item best = 1.
+    \end{itemize}
+  \item max\_x\_run = 3 (3 điểm cùng $x=0$ sau khi encode/sort?) — thực tế $xs=[0,3,4]$, max\_x\_run=1.
+  \item Kết quả: $\sqrt{1} = 1.0000$.
+\end{enumerate}
+
+Dataset 2 ($N=4$, điểm $(0,0), (1,1), (2,2), (3,3)$):
+\begin{enumerate}
+  \item Encode: $[1000000000, 1000000001000000001, 1000000002000000002, 1000000003000000003]$.
+  \item Sort: theo thứ tự đã encode (tương đương $x$ tăng, rồi $y$ tăng).
+  \item Decode: $xs=[0,1,2,3]$, $ys=[0,1,2,3]$.
+  \item Scan: $i=0$: $(0,0)$ với $(1,1)$, $dx=1, dy=1$, $d=\sqrt{2}\approx 1.4142$.
+  \item Kết quả: $1.4142$.
+\end{enumerate}
+
+Output: \texttt{1.0000}, \texttt{1.4142}.
+
+\subsection{Đánh giá hiệu năng}
+
+\begin{table}[H]
+\centering
+\caption{Độ phức tạp của Challenge 6}
+\begin{tabularx}{\textwidth}{p{4.5cm}Y}
+\toprule
+\textbf{Thành phần} & \textbf{Độ phức tạp} \\
+\midrule
+Encode & $O(n)$ \\
+Sort & $O(n \log n)$ \\
+Scan heuristic & $O(n \times \texttt{NEIGHBORS}) = O(n)$ vì $\texttt{NEIGHBORS}=8$ \\
+Transpose scan (khi cần) & $O(n \log n) + O(n)$ \\
+\midrule
+\midrule
+Dataset-level parallel & $O(\frac{N}{P})$ cho $P$ workers \\
+Scan-level parallel & $O(\frac{n}{P_\text{scan}})$ cho mỗi dataset lớn \\
+\midrule
+\midrule
+Ngưỡng scan parallel & $\texttt{PARALLEL\_SINGLE\_MIN} = 120000$ \\
+Ngưỡng dataset parallel & $\texttt{PARALLEL\_TOTAL\_MIN} = 50000$ \\
+Ngưỡng chunk scan & $\texttt{PARALLEL\_CHUNK\_MIN} = 50000$ \\
+\midrule
+\midrule
+Bộ nhớ & $O(n)$: mảng encoded, xs[], ys[], swapped[] \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ==================== KẾT QUẢ THỰC NGHIỆM ====================
+\section{Kết quả thực nghiệm trên hệ thống chấm bài}
+
+Các chương trình được nộp và đánh giá trên hệ thống chấm bài của trường. Bảng dưới đây tổng hợp kết quả tốt nhất của từng challenge, chỉ xét các lần nộp có trạng thái \textit{Completed}.
+
+\begin{table}[H]
+\centering
+\caption{Kết quả thực nghiệm tốt nhất trên hệ thống chấm bài}
+\begin{tabularx}{\textwidth}{p{2.5cm}p{2.5cm}Y}
+\toprule
+\textbf{Challenge} & \textbf{Kết quả tốt nhất} & \textbf{Nhận xét} \\
+\midrule
+Challenge 1 & 0.05s & Thời gian xử lý thấp nhờ chia dữ liệu theo byte ranges và giảm chi phí giao tiếp giữa 16 process. \\
+Challenge 2 & 0.22s & Kết quả tốt sau khi tối ưu bằng split-based precompute và ghi kết quả qua shared memory. \\
+Challenge 3 & 0.04s & Kích thước dữ liệu kiểm thử phù hợp nên thời gian xử lý rất thấp. \\
+Challenge 4 & 0.27s & Thời gian chịu ảnh hưởng bởi bước sắp xếp và hợp nhất kết quả toàn cục. \\
+Challenge 5 & 0.01s & Bài toán tìm kiếm đạt thời gian rất thấp do mỗi đoạn dữ liệu có thể xử lý độc lập. \\
+Challenge 6 & 1.39s & Đây là challenge nặng nhất, nhưng kết quả được cải thiện đáng kể nhờ song song hóa đa cấp và tối ưu scan. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Từ kết quả thực nghiệm, có thể thấy các challenge có tính độc lập dữ liệu cao như Challenge 1 và Challenge 5 đạt thời gian chạy rất thấp. Challenge 2 và Challenge 4 có thời gian cao hơn do cần thêm các bước tiền xử lý, loại bỏ trùng lặp, sắp xếp hoặc hợp nhất kết quả. Challenge 6 là bài toán có độ phức tạp lớn nhất do phải xử lý nhiều tập điểm 2D và thực hiện sắp xếp trước khi quét tìm khoảng cách nhỏ nhất.
+
+Các kết quả trên cho thấy việc lựa chọn chiến lược song song hóa phù hợp với đặc điểm dữ liệu có ảnh hưởng trực tiếp đến hiệu năng chương trình. Những bài toán có thể chia nhỏ dữ liệu độc lập thường đạt hiệu quả tốt hơn, trong khi các bài toán cần bước tổng hợp hoặc sắp xếp toàn cục sẽ chịu thêm overhead.
+
+% ==================== KẾT LUẬN ====================
+\section{Kết luận}
+
+\subsection{Tổng kết phương pháp song song hóa}
+
+\begin{table}[H]
+\centering
+\caption{Tổng hợp phương pháp song song hóa sáu bài toán}
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{p{0.8cm}p{2.6cm}p{2.0cm}p{3.5cm}Y}
+\toprule
+\textbf{Bài} & \textbf{Phương pháp} & \textbf{Chia dữ liệu} & \textbf{Giao tiếp} & \textbf{Tính độc lập} \\
+\midrule
+C1 & Pool(16) & Byte ranges, chỉnh token & \texttt{pool.map} & Độc lập hoàn toàn \\
+C2 & 3 process + main & Chia mảng thành 4 phần & RawArray & Độc lập hoàn toàn \\
+C3 & Pool + initializer & Chia theo block hàng & \texttt{imap\_unordered} & Độc lập theo hàng \\
+C4 & Pool + initializer & Chia records thành chunk & \texttt{pool.map} & Sort cục bộ, merge toàn cục \\
+C5 & Process + Queue & Byte ranges, chỉnh token & SimpleQueue & Độc lập theo range \\
+C6 & Multi-level process & Dataset và scan chunks & SimpleQueue & Dataset độc lập; scan độc lập \\
+\bottomrule
+\end{tabularx}
+\endgroup
+\end{table}
+
+\subsection{So sánh chiến lược giao tiếp}
+
+\begin{table}[H]
+\centering
+\caption{So sánh cơ chế giao tiếp giữa các challenge}
+\begin{tabularx}{\textwidth}{p{3.5cm}p{3cm}p{4cm}Y}
+\toprule
+\textbf{Cơ chế} & \textbf{Challenge} & \textbf{Ưu điểm} & \textbf{Nhược điểm} \\
+\midrule
+\texttt{pool.map} & C1, C4 & Đơn giản, tự động cân bằng & Pickle dữ liệu lớn (records, chunks) \\
+\texttt{RawArray} & C2 & Không pickle, ghi trực tiếp & Cần global, chỉ ghi đọc \\
+\texttt{imap\_unordered} & C3 & Nhận kết quả sớm trước & Vẫn pickle kết quả \\
+\texttt{SimpleQueue} & C5, C6 & Truyền nhiều giá trị, batch & Phức tạp hơn, cần join thủ công \\
+\midrule
+\midrule
+\textbf{Initializer pattern} & C3, C4 & Truyền dữ liệu lớn 1 lần & Dữ liệu được copy vào mỗi worker \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Bài học kinh nghiệm}
+
+\begin{enumerate}
+  \item \textbf{Multiprocessing vs Threading}: Python GIL hạn chế hiệu quả của threading trong các tác vụ CPU-bound. Multiprocessing là lựa chọn phù hợp cho sáu bài toán này.
+  
+  \item \textbf{Chọn ngưỡng song song hóa}: Overhead tạo process có thể lớn hơn lợi ích khi dữ liệu nhỏ. Chiến lược chọn ngưỡng (\texttt{if n < 20000}, \texttt{if total\_points < 50000}) giúp tránh overhead không cần thiết.
+  
+  \item \textbf{Giảm chi phí truyền dữ liệu}: \texttt{RawArray}, \texttt{SimpleQueue}, và \texttt{initializer} giúp giảm overhead bằng cách tránh pickle dữ liệu lớn hoặc truyền qua lại nhiều lần.
+  
+  \item \textbf{Tối ưu cache locality}: Chuyển vị ma trận $B$ trong Challenge 3 giúp inner loop truy cập bộ nhớ liên tục, tăng đáng kể hiệu năng.
+  
+  \item \textbf{Xử lý edge cases trước}: $Q=1$, $N=0$, $n=1$, dữ liệu rỗng — xử lý sớm giúp tránh tính toán không cần thiết và lỗi tiềm ẩn.
+  
+  \item \textbf{Mã hóa dữ liệu}: Encode tuple thành số nguyên (Challenge 6) giúp sort nhanh hơn, giảm chi phí so sánh phức tạp.
+  
+  \item \textbf{Load balancing động}: Trong Challenge 6, gán dataset lớn cho worker có load nhỏ nhất giúp cân bằng tải tốt hơn so với chia đều theo số lượng.
+\end{enumerate}
+
+\subsection{Hướng cải tiến}
+
+\begin{itemize}
+  \item \textbf{Challenge 2}: Nghiên cứu thêm về tối ưu precompute cho nhiều giá trị $Q$ khác nhau, ví dụ dùng cached computation hoặc SIMD-accelerated computation.
+  \item \textbf{Challenge 4}: Dùng \texttt{heapq.merge()} để hợp nhất các chunk đã sort trong $O(N \log P)$ thay vì sort lại toàn cục $O(N \log N)$.
+  \item \textbf{Challenge 6}: Thay thuật toán scan heuristic bằng thuật toán closest pair divide-and-conquer $O(N \log N)$ để đảm bảo kết quả chính xác tuyệt đối trong mọi trường hợp.
+  \item \textbf{Tất cả challenge}: Cân nhắc dùng \texttt{multiprocessing.shared\_memory} (Python 3.8+) để chia sẻ dữ liệu giữa các process một cách hiệu quả hơn, thay thế cho global variables và initializer pattern.
+\end{itemize}
+
+\vfill
+\begin{center}
+\textit{Báo cáo được thực hiện bởi Nhóm 12 -- Ngày 26 tháng 5 năm 2026}
+\end{center}
+
+\end{document}

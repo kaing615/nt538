@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallel Programming - Giải thích Chi tiết</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: rgba(0,0,0,0.3);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 2px solid #0f3460;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #aaa;
+            font-size: 1.1em;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        .challenge-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+        
+        .challenge-header {
+            background: linear-gradient(135deg, #0f3460, #16213e);
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .challenge-header h2 {
+            color: #00d9ff;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .challenge-body {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section h3 {
+            color: #ffd700;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section p {
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        .diagram {
+            background: #0a0a15;
+            border: 2px solid #00d9ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            color: #00ff88;
+        }
+        
+        .step-list {
+            counter-reset: step;
+        }
+        
+        .step {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 20px;
+        }
+        
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #00d9ff, #00ff88);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .step-content {
+            background: rgba(0,0,0,0.3);
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 3px solid #00d9ff;
+        }
+        
+        .step-content strong {
+            color: #00ff88;
+        }
+        
+        .formula {
+            background: rgba(0,0,0,0.5);
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.2em;
+            text-align: center;
+            margin: 15px 0;
+            color: #ffd700;
+        }
+        
+        .highlight-box {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid #ffd700;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 15px 0;
+        }
+        
+        .highlight-box strong {
+            color: #ffd700;
+        }
+        
+        .code-block {
+            background: #0a0a15;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .code-block .keyword { color: #ff79c6; }
+        .code-block .function { color: #50fa7b; }
+        .code-block .comment { color: #6272a4; }
+        .code-block .number { color: #f1fa8c; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        th {
+            background: rgba(0,217,255,0.2);
+            color: #00d9ff;
+        }
+        
+        td {
+            color: #ccc;
+        }
+        
+        .arrow {
+            color: #ffd700;
+            font-size: 1.5em;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .example-box {
+            background: linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2));
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .example-box h4 {
+            color: #00ff88;
+            margin-bottom: 15px;
+        }
+        
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .flow-box {
+            background: linear-gradient(135deg, #0f3460, #16213e);
+            border: 2px solid #00d9ff;
+            border-radius: 8px;
+            padding: 15px 20px;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .flow-box.highlight {
+            border-color: #00ff88;
+            background: rgba(0,255,136,0.1);
+        }
+        
+        .flow-arrow {
+            color: #ffd700;
+            font-size: 1.5em;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .nav-link:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Parallel Programming - Giải thích Chi tiết</h1>
+        <p>6 Challenges với ví dụ minh họa từng bước</p>
+    </div>
+    
+    <div class="container">
+        <!-- CHALLENGE 1 -->
+        <div class="challenge-card" id="challenge1">
+            <div class="challenge-header">
+                <h2>📁 Challenge 1: Tổng số chia hết cho 3</h2>
+            </div>
+            <div class="challenge-body">
+                <div class="section">
+                    <h3>🎯 Mục tiêu</h3>
+                    <p>Đọc file, tìm các số nguyên dương chia hết cho 3, tính tổng. Xử lý song song bằng cách chia file theo byte range.</p>
+                </div>
+                
+                <div class="section">
+                    <h3>📋 Quy tắc lọc</h3>
+                    <div class="diagram">
+┌─────────────────────────────────────────────┐
+│  Số hợp lệ phải thỏa mãn TẤT CẢ điều kiện:│
+├─────────────────────────────────────────────┤
+│  1. Có thể chuyển sang float               │
+│  2. Lớn hơn 0                              │
+│  3. Là số nguyên (val.is_integer() == True)│
+│  4. Chia hết cho 3                          │
+└─────────────────────────────────────────────┘</div>
+                </div>
+                
+                <div class="section">
+                    <h3>📝 Thuật toán từng bước</h3>
+                    <div class="step-list">
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Đọc dòng đầu</strong><br>
+                                Dòng đầu tiên chứa số lượng phần tử n, bỏ qua.
+                                <div class="diagram" style="margin-top:10px;">File: n=7
+1 2 3 6 9 12 15 18 21
+↑──┘
+Dòng đầu (bỏ qua)</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Chia file thành 16 đoạn byte</strong><br>
+                                Tính chunk_size = data_size / 16
+                                <div class="diagram" style="margin-top:10px;">┌──────┬──────┬──────┬──────┬──────┬──────┐
+│ P1  │ P2  │ P3  │ P4  │ ... │ P16 │
+│0-10 │11-20│21-30│31-40│     │     │
+└──────┴──────┴──────┴──────┴──────┴──────┘</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Điều chỉnh điểm cắt</strong><br>
+                                Di chuyển điểm cắt đến khoảng trắng gần nhất, không cắt giữa một số.
+                                <div class="highlight-box">
+                                    <strong>⚠️ Quan trọng:</strong> Nếu cắt ở giữa số "123", sẽ tách thành "12" và "3" → sai!
+                                </div>
+                                <div class="diagram" style="margin-top:10px;">❌ Cắt sai: "1 2 3 |6 9" → 3|6 bị tách
+✅ Cắt đúng: "1 2 |3 6 9" → 3 6 9 còn nguyên</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Mỗi process xử lý đoạn của mình</strong><br>
+                                Đọc chunk, split(), kiểm tra điều kiện, tính tổng cục bộ.
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Process chính cộng kết quả</strong><br>
+                                sum(results) = 3 + 27 + 54 = <strong>84</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>💻 Code minh họa</h3>
+                    <div class="code-block">
+<span class="keyword">def</span> <span class="function">worker_task</span>(args):
+    file_path, start_byte, end_byte = args
+    total = <span class="number">0</span>
+    
+    <span class="keyword">with</span> <span class="function">open</span>(file_path, <span class="string">'r'</span>) <span class="keyword">as</span> f:
+        f.seek(start_byte)
+        chunk = f.read(end_byte - start_byte)
+        
+        <span class="keyword">for</span> s <span class="keyword">in</span> chunk.split():
+            <span class="keyword">try</span>:
+                val = <span class="function">float</span>(s)
+                <span class="keyword">if</span> val > <span class="number">0</span> <span class="keyword">and</span> val.is_integer() <span class="keyword">and</span> <span class="function">int</span>(val) % <span class="number">3</span> == <span class="number">0</span>:
+                    total += <span class="function">int</span>(val)
+            <span class="keyword">except</span> ValueError:
+                <span class="keyword">continue</span>
+    
+    <span class="keyword">return</span> total
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHALLENGE 2 -->
+        <div class="challenge-card" id="challenge2">
+            <div class="challenge-header">
+                <h2>🔢 Challenge 2: Fibonacci Modulo</h2>
+            </div>
+            <div class="challenge-body">
+                <div class="section">
+                    <h3>🎯 Mục tiêu</h3>
+                    <p>Tính F(A_i) mod Q cho nhiều truy vấn, với F là dãy Fibonacci (F(0)=0, F(1)=1).</p>
+                </div>
+                
+                <div class="section">
+                    <h3>⚡ Fast Doubling Algorithm</h3>
+                    <p>Tính F(n) trong O(log n) bằng công thức:</p>
+                    <div class="formula">
+                        F(2k) = F(k) × [2F(k+1) - F(k)]<br>
+                        F(2k+1) = F(k)² + F(k+1)²
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>📝 Ví dụ: Tính F(10) mod 100</h3>
+                    <div class="step-list">
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Binary của 10</strong><br>
+                                10 = <strong>1010</strong> (từ phải sang)
+                                <div class="diagram" style="margin-top:10px;">Bit:    1   0   1   0
+Vị trí: 3   2   1   0
+
+Bắt đầu: (F(0), F(1)) = (0, 1)</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Bit 0 (n & 1 = 0)</strong><br>
+                                k=1, dùng (F(0), F(1)) → (F(0), F(1)) vì bit=0
+                                <div class="diagram" style="margin-top:10px;">a = F(0) = 0, b = F(1) = 1
+c = F(0) × (2×1 - 0) = 0  → F(0)
+d = 0² + 1² = 1        → F(1)</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Bit 1 (n & 2 = 1)</strong><br>
+                                k=2, bit=1 nên dùng (F(1), F(2))
+                                <div class="diagram" style="margin-top:10px;">a = F(1) = 1, b = F(2) = 1
+c = F(2) = 1, d = F(3) = 2
+Vì bit=1: return (d, c+d) = (2, 3)</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Bit 2 (n & 4 = 0)</strong><br>
+                                k=4, bit=0 nên dùng (F(2), F(3))
+                                <div class="diagram" style="margin-top:10px;">a = F(2) = 1, b = F(3) = 2
+c = F(4) = 3, d = F(5) = 5
+Vì bit=0: return (c, d) = (3, 5)</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Bit 3 (n & 8 = 1)</strong><br>
+                                k=8, bit=1 nên dùng (F(4), F(5))
+                                <div class="diagram" style="margin-top:10px;">a = F(4) = 3, b = F(5) = 5
+c = F(8) = 21, d = F(9) = 34
+Vì bit=1: return (d, c+d) = (34, 55)</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>✅ Kết quả</strong><br>
+                                F(10) mod 100 = <strong>55</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>🚀 Tối ưu hóa</h3>
+                    <table>
+                        <tr><th>Trường hợp</th><th>Phương pháp</th><th>Độ phức tạp</th></tr>
+                        <tr><td>Q = 1</td><td>Return [0]*n</td><td>O(1)</td></tr>
+                        <tr><td>Q = 2</td><td>Period = 3</td><td>O(n)</td></tr>
+                        <tr><td>Q ≤ 80000</td><td>Pisano Period</td><td>O(q)</td></tr>
+                        <tr><td>Range ≤ 300000</td><td>Precompute liên tục</td><td>O(range)</td></tr>
+                        <tr><td>Lớn</td><td>Fast doubling + Gap table</td><td>O(log n)</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHALLENGE 3 -->
+        <div class="challenge-card" id="challenge3">
+            <div class="challenge-header">
+                <h2>📐 Challenge 3: Nhân ma trận song song</h2>
+            </div>
+            <div class="challenge-body">
+                <div class="section">
+                    <h3>🎯 Mục tiêu</h3>
+                    <p>Nhân hai ma trận vuông A × B, trả về ma trận C cùng đường chéo và tổng.</p>
+                </div>
+                
+                <div class="section">
+                    <h3>📝 Công thức</h3>
+                    <div class="formula">
+                        C[i][j] = Σ A[i][k] × B[k][j]
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>💡 Tối ưu: Transpose ma trận B</h3>
+                    <p>Thay vì truy cập cột của B (không liên tục trong memory), ta chuyển vị B thành BT:</p>
+                    <div class="diagram">
+┌─────────────────┐     ┌─────────────────┐
+│  B = [[5,6],   │     │ BT = [[5,7],    │
+│        [7,8]]  │ →   │        [6,8]]   │
+└─────────────────┘     └─────────────────┘
+
+C[i][j] = A[i] · BT[j]  (dot product!)
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>📝 Ví dụ: A × B</h3>
+                    <div class="step-list">
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Ma trận ban đầu</strong>
+                                <div class="diagram" style="margin-top:10px;">     0   1
+A = [0]  1   2
+   [1]  3   4
+
+     0   1
+B = [0]  5   6
+   [1]  7   8
+
+BT = [0]  5   7
+    [1]  6   8</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Tính C[0][0]</strong><br>
+                                C[0][0] = A[0] · BT[0]
+                                <div class="diagram" style="margin-top:10px;">= [1, 2] · [5, 7]
+= 1×5 + 2×7
+= 5 + 14
+= 19</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Tính C[0][1]</strong><br>
+                                C[0][1] = A[0] · BT[1]
+                                <div class="diagram" style="margin-top:10px;">= [1, 2] · [6, 8]
+= 1×6 + 2×8
+= 6 + 16
+= 22</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Tính C[1][0]</strong><br>
+                                C[1][0] = A[1] · BT[0]
+                                <div class="diagram" style="margin-top:10px;">= [3, 4] · [5, 7]
+= 3×5 + 4×7
+= 15 + 28
+= 43</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Tính C[1][1]</strong><br>
+                                C[1][1] = A[1] · BT[1]
+                                <div class="diagram" style="margin-top:10px;">= [3, 4] · [6, 8]
+= 3×6 + 4×8
+= 18 + 32
+= 50</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>✅ Kết quả</strong>
+                                <div class="diagram" style="margin-top:10px;">C = A × B = [[19, 22],
+                [43, 50]]
+
+Đường chéo chính: [19, 50]
+Đường chéo phụ:   [22, 43]
+Tổng:             134</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>🔄 Xử lý song song</h3>
+                    <div class="diagram">
+┌─────────────────────────────────────────────┐
+│  Process 1: Tính dòng 0 (C[0][0], C[0][1]) │
+│  Process 2: Tính dòng 1 (C[1][0], C[1][1])│
+│  ...                                        │
+│  Process N: Tính dòng N-1                  │
+└─────────────────────────────────────────────┘</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHALLENGE 4 -->
+        <div class="challenge-card" id="challenge4">
+            <div class="challenge-header">
+                <h2>📊 Challenge 4: Sắp xếp Record</h2>
+            </div>
+            <div class="challenge-body">
+                <div class="section">
+                    <h3>🎯 Mục tiêu</h3>
+                    <p>Sắp xếp n record (v, label) theo thứ tự:</p>
+                    <ol style="color:#ccc; margin-left:20px;">
+                        <li>v giảm dần</li>
+                        <li>label tăng dần</li>
+                        <li>Ổn định theo index ban đầu</li>
+                    </ol>
+                </div>
+                
+                <div class="section">
+                    <h3>🔑 Encode thành Sort Key</h3>
+                    <div class="formula">
+                        key = (-v, label, i, v, label)
+                    </div>
+                    <div class="highlight-box">
+                        <strong>Giải thích:</strong><br>
+                        • <strong>-v</strong>: Python sort tăng dần → -v tăng dần = v giảm dần<br>
+                        • <strong>label</strong>: sort tăng dần theo bytes<br>
+                        • <strong>i</strong>: index gốc → độ ổn định<br>
+                        • <strong>v, label</strong>: để phục hồi kết quả
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>📝 Ví dụ</h3>
+                    <div class="step-list">
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Input records</strong>
+                                <div class="diagram" style="margin-top:10px;">Index 0: (100, "A")
+Index 1: (50, "B")
+Index 2: (100, "A")
+Index 3: (75, "C")</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Encode mỗi record</strong>
+                                <div class="diagram" style="margin-top:10px;">[0] (100, "A") → (-100, b"A", 0, 100, b"A")
+[1] (50, "B")  → (-50,  b"B", 1, 50,  b"B")
+[2] (100, "A") → (-100, b"A", 2, 100, b"A")
+[3] (75, "C")  → (-75,  b"C", 3, 75,  b"C")</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Sort theo tuple</strong><br>
+                                Python so sánh từng phần tử:
+                                <div class="diagram" style="margin-top:10px;">So sánh [0] và [2]: cùng (-100, b"A")
+→ So sánh i: 0 < 2 → [0] đứng trước [2]
+
+Sort kết quả:
+1. (-100, b"A", 0, ...)  ← [0]
+2. (-100, b"A", 2, ...)  ← [2]
+3. (-75,  b"C", 3, ...)  ← [3]
+4. (-50,  b"B", 1, ...)  ← [1]</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>✅ Kết quả cuối cùng</strong>
+                                <div class="diagram" style="margin-top:10px;">(100, "A")  ← v giảm dần: 100
+(100, "A")  ← cùng v, label A = B (so sánh bytes)
+(75, "C")   ← v = 75
+(50, "B")   ← v giảm dần: 50</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHALLENGE 5 -->
+        <div class="challenge-card" id="challenge5">
+            <div class="challenge-header">
+                <h2>🔍 Challenge 5: Tìm vị trí đầu tiên</h2>
+            </div>
+            <div class="challenge-body">
+                <div class="section">
+                    <h3>🎯 Mục tiêu</h3>
+                    <p>Tìm vị trí (index) của key trong dãy số. Trả về -1 nếu không tìm thấy.</p>
+                </div>
+                
+                <div class="section">
+                    <h3>⚠️ Vấn đề: Token Boundary</h3>
+                    <p>Nếu chỉ dùng <code>str.find(key)</code>, sẽ nhầm "10" trong "110"!</p>
+                    <div class="diagram">
+┌─────────────────────────────────────────────┐
+│  Body: "10 110 1000 100"                  │
+│                                             │
+│  Tìm "10":                                 │
+│  ❌ body.find("10") = 0                   │
+│     → Nhầm vì tìm thấy "10" trong "110"  │
+│                                             │
+│  ✅ Đúng: index = 0 vì "10" là token riêng│
+│     (có space trước và sau)                │
+└─────────────────────────────────────────────┘</div>
+                </div>
+                
+                <div class="section">
+                    <h3>📝 Thuật toán từng bước</h3>
+                    <div class="step-list">
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Tìm vị trí bằng substring search</strong><br>
+                                Dùng <code>body.find(key)</code> để tìm vị trí.
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Kiểm tra boundary trước key</strong>
+                                <div class="diagram" style="margin-top:10px;">if pos > 0 and not body[pos-1].isspace():
+    # Sai! Đây là substring, không phải token
+    # Ví dụ: "110" chứa "10" nhưng không phải token "10"</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Kiểm tra boundary sau key</strong>
+                                <div class="diagram" style="margin-top:10px;">if pos + len(key) < len(body) and not body[pos + len(key)].isspace():
+    # Sai! Tiếp theo không phải space
+    # Ví dụ: "100" bắt đầu bằng "10" nhưng không phải "10"</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Đếm số token</strong><br>
+                                Đếm số token trước vị trí tìm thấy để ra index.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>📝 Ví dụ chi tiết</h3>
+                    <div class="example-box">
+                        <h4>Tìm key="10" trong "10 110 1000 100"</h4>
+                        <div class="step-list">
+                            <div class="step">
+                                <div class="step-content">
+                                    <strong>Token 0: "10"</strong><br>
+                                    pos = 0, tìm thấy<br>
+                                    Trước: đầu string ✓<br>
+                                    Sau: space ✓<br>
+                                    → <strong>ĐÂY LÀ KẾT QUẢ! Index = 0</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHALLENGE 6 -->
+        <div class="challenge-card" id="challenge6">
+            <div class="challenge-header">
+                <h2>📍 Challenge 6: Closest Pair</h2>
+            </div>
+            <div class="challenge-body">
+                <div class="section">
+                    <h3>🎯 Mục tiêu</h3>
+                    <p>Tìm khoảng cách Euclid nhỏ nhất giữa 2 điểm trong không gian 2D.</p>
+                </div>
+                
+                <div class="section">
+                    <h3>🔢 Encode điểm</h3>
+                    <div class="formula">
+                        encoded = (x + OFFSET) << 32 | (y + OFFSET)
+                    </div>
+                    <div class="highlight-box">
+                        <strong>OFFSET = 10⁹</strong> để xử lý tọa độ âm<br>
+                        <strong>&lt;&lt; 32</strong>: dịch trái 32 bits cho x<br>
+                        <strong>|</strong>: OR với y
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>📝 Ví dụ: Encode và Sort</h3>
+                    <div class="step-list">
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Điểm ban đầu</strong>
+                                <div class="diagram" style="margin-top:10px;">P1 = (1, 2)
+P2 = (3, 4)
+P3 = (5, 1)
+P4 = (2, 3)
+P5 = (4, 5)</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Encode</strong>
+                                <div class="diagram" style="margin-top:10px;">P1: ((1+1e9) << 32) | (2+1e9) = 4294967301294967298
+P2: ((3+1e9) << 32) | (4+1e9) = 4294967309884901892
+P3: ((5+1e9) << 32) | (1+1e9) = 4294967318474836481
+P4: ((2+1e9) << 32) | (3+1e9) = 4294967305589934595
+P5: ((4+1e9) << 32) | (5+1e9) = 4294967314179869189</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Sort (theo x, rồi theo y)</strong>
+                                <div class="diagram" style="margin-top:10px;">P1(1,2) → P4(2,3) → P2(3,4) → P5(4,5) → P3(5,1)</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>Decode thành arrays</strong>
+                                <div class="diagram" style="margin-top:10px;">xs = [1, 2, 3, 4, 5]
+ys = [2, 3, 4, 5, 1]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>🔍 Scan tìm Closest Pair</h3>
+                    <p>Với mỗi điểm, chỉ so sánh với 8 điểm kế tiếp (heuristic):</p>
+                    <div class="step-list">
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>i=0, điểm (1,2)</strong><br>
+                                So sánh với (2,3): dist = √((2-1)² + (3-2)²) = √2 ≈ <strong>1.414</strong><br>
+                                So sánh với (3,4): dist = √((3-1)² + (4-2)²) = √8 ≈ 2.828<br>
+                                <strong>Best = 1.414</strong>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>i=1, điểm (2,3)</strong><br>
+                                So sánh với (3,4): √2 ≈ 1.414 = Best<br>
+                                So sánh với (4,5): √8 ≈ 2.828<br>
+                                <strong>Best = 1.414</strong> (không đổi)
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>i=2, điểm (3,4)</strong><br>
+                                So sánh với (4,5): √2 ≈ 1.414 = Best<br>
+                                So sánh với (5,1): √25 = 5<br>
+                                <strong>Best = 1.414</strong>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-content">
+                                <strong>✅ Kết quả</strong><br>
+                                Closest pair: <strong>(1,2) và (2,3)</strong><br>
+                                Khoảng cách: <strong>√2 ≈ 1.4142</strong>
+                                <div class="diagram" style="margin-top:10px;">Y
+│
+5  · P5(4,5)
+│
+4  · P2(3,4)
+│
+3  · P4(2,3)
+│
+2  · P1(1,2)──·── P4(2,3) distance = √2
+│
+1  · P3(5,1)
+└──┴──┴──┴──┴── X
+   1  2  3  4  5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>🔄 Transpose khi cần</h3>
+                    <p>Nếu có nhiều điểm cùng hoành độ (max_x_run > 8), đảo vai trò x và y rồi scan lại:</p>
+                    <div class="diagram">
+┌─────────────────────────────────────────────┐
+│  swapped[i] = (ys[i] << 32) | xs[i]        │
+│                                             │
+│  Sort → điểm xếp theo y, rồi theo x        │
+│  Scan lại với 8 láng giềng                 │
+│  Lấy min(Best, Transposed_Best)            │
+└─────────────────────────────────────────────┘</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align:center; padding:40px 0;">
+            <a href="index.html" class="nav-link">← Quay lại Interactive Demo</a>
+        </div>
+    </div>
+</body>
+</html>
